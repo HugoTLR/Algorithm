@@ -20,18 +20,10 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QListWidget" name="lst_func">
-          <item>
-           <property name="text">
-            <string>insertion</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>selection</string>
-           </property>
-          </item>
-         </widget>
+         <widget class="QListWidget" name="lst_func"/>
+        </item>
+        <item>
+         <widget class="QListWidget" name="lst_data"/>
         </item>
         <item>
          <widget class="QPushButton" name="btn_run">

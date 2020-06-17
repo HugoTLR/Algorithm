@@ -2,6 +2,8 @@ from PyQt5 import uic, QtWidgets, QtGui
 import sys
 from algos import *
 from image import ImageBuilder
+import inspect
+
 class Ui(QtWidgets.QMainWindow):
   def __init__(self):
     super(Ui,self).__init__()
@@ -9,33 +11,37 @@ class Ui(QtWidgets.QMainWindow):
     uic.loadUi('../layout.ui',self) #Load Ui From QT
 
     self.sorter = None
+    print(self.get_implemented_algorithm())
     self.im_builder = ImageBuilder(640,480)
 
     # -1 is the key for initial state
     self.sld_steps.setMinimum(-1)
 
+    self.populate_algo_list()
 
     self.show()
 
+  def get_implemented_algorithm(self):
+    return [cls.__name__ for cls in Sorter.__subclasses__()]
 
+  def populate_algo_list(self):
+    for algorithm in self.get_implemented_algorithm():
+      self.lst_func.addItem(algorithm)
+  
   def slt_sld_step(self):
-    print(f"Allo ? {self.sld_steps.value()}")
     self.current_step = self.sld_steps.value()
     init,final = False,False
-
     if self.current_step == -1: init = True
     elif self.current_step == self.total_steps: final = True
     self.build_visuals(init=init,final=final)
-
-
 
   def slt_sort_run(self):
     l = [2,8,7,3,4,9,5,6,1]
     item = self.lst_func.currentItem().text()
 
-    if item == "insertion":
+    if item == "Insertion":
       self.sorter = Insertion()
-    elif item == "selection":
+    elif item == "Selection":
       self.sorter = Selection()
 
     self.sorter.sort(dc(l))
