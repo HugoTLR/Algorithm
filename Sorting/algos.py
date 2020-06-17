@@ -51,11 +51,12 @@ class Sorter:
     for j in range(l):
       if j < i :
         ll.append(1)
-      elif j > i:
+      elif j > i+1:
         ll.append(0)
       else:
         ll.append(2)
     return ll
+
   def selection(self,l):
     self.init_step = dc(l)
     self.init_status = self.build_selection_status(0,0,len(l))
@@ -70,10 +71,11 @@ class Sorter:
 
       status = self.build_selection_status(i,jmin,len_l)
       self.steps_status.append(status)
-      if jmin != i:
-        self.steps_status[-1][i] = 2
-        l = self.swap(l,i,jmin)
+      self.steps_status[-1][i] = 2
       self.steps.append(dc(l))
+      if jmin != i:
+        l = self.swap(l,i,jmin)
+
 
     self.final_step = dc(l)
     self.final_status = [1 for _ in range(len_l)]
