@@ -23,7 +23,8 @@ class Ui(QtWidgets.QMainWindow):
     if item == "insertion":
       self.sorter = Insert()
     elif item == "selection":
-      self.sorter.selection(dc(l))
+
+      self.sorter = Selection()
     self.sorter.sort(dc(l))
     self.current_step = 0
     self.total_steps = len(self.sorter.steps)
@@ -59,7 +60,6 @@ class Ui(QtWidgets.QMainWindow):
       data,status = self.sorter.final_step,self.sorter.final_status
       text = "Final State"
     else:
-
       data,status = self.sorter.steps[self.current_step],self.sorter.steps_status[self.current_step]
     self.im_builder.set_data(data,status)
     self.im_builder.build_image()
