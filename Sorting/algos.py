@@ -1,13 +1,16 @@
 from copy import deepcopy as dc
 
 class Sorter:
+  #0 For unchecked
+  #2 for actual checked
+  # 1 for done with
   def __init__(self):
     pass
 
   def __str__(self):
     r = ""
     if self.steps:
-      for s in self.steps: r = r + str(s) + "\n"
+      for s,ss in zip(self.steps,sel.steps_status): r = r + str(s) + '\t' + str(ss) + "\n"
     return r
 
   def swap(self,l,i,j):
@@ -16,24 +19,42 @@ class Sorter:
     l[j] = x
     return l
 
-  def insertion(self,l):
+  def build_status(self):
+    raise NotImplementedError("Must override build_status")
+
+
+  def sort(self):
+    raise NotImplementedError("Must override sort")
+
+class Insert(Sorter):
+  def __init__(self):
+    pass
+  def __str__(self):
+    return super().__str__()
+
+  def build_status(self,i,l):
+    ll = []
+    for j in range(l):
+      if j < i :
+        ll.append(1)
+      elif j > i+1:
+        ll.append(0)
+      else:
+        ll.append(2)
+    return ll
+
+  def sort(self,l):
     self.init_step = dc(l)
     self.init_status = self.build_insertion_status(0,len(l))
-
     self.steps = []
-    #0 For unchecked
-    #2 for actual checked
-    # 1 for done with
-    i = 1
-    len_l = len(l)
     self.steps_status = []
 
-    while i < len_l:
-      status = self.build_insertion_status(i,len_l)
-      self.steps_status.append(status)
+    i,len_l = 1,len(l)
 
-      x = l[i]
-      j = i-1
+    while i < len_l:
+      self.steps_status.append(self.build_status(i,len_l))
+
+      x, j = l[i], i-1
       while j >= 0 and l[j] > x:
         l[j+1] = l[j]
         j -= 1
@@ -42,9 +63,9 @@ class Sorter:
       self.steps.append(dc(l))
 
     self.final_step = dc(l)
-    self.final_status = self.build_insertion_status(i,len_l)
-    print(len(self.steps))
-    print(len(self.steps_status))
+    self.final_status = self.build_status(i,len_l)
+  #  print(len(self.steps))
+  #  print(len(self.steps_status))
 
   def build_insertion_status(self,i,l):
     ll = []

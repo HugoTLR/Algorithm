@@ -8,7 +8,7 @@ class Ui(QtWidgets.QMainWindow):
     #Load UI From ui file
     uic.loadUi('../layout.ui',self) #Load Ui From QT
 
-    self.sorter = Sorter()
+    self.sorter = None
 
 
     self.im_builder = ImageBuilder(640,480)
@@ -21,9 +21,10 @@ class Ui(QtWidgets.QMainWindow):
     item = self.lst_func.currentItem().text()
 
     if item == "insertion":
-      self.sorter.insertion(dc(l))
+      self.sorter = Insert()
     elif item == "selection":
       self.sorter.selection(dc(l))
+    self.sorter.sort(dc(l))
     self.current_step = 0
     self.total_steps = len(self.sorter.steps)
     self.build_visuals()
@@ -46,6 +47,8 @@ class Ui(QtWidgets.QMainWindow):
     if self.current_step < self.total_steps -1:
       self.current_step += 1
       self.build_visuals()
+
+
   def build_visuals(self,init=False,final=False):
     print(f"{self.current_step=} {self.total_steps=}")
     text = f"Step {self.current_step+1} / {self.total_steps}"
