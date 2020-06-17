@@ -25,6 +25,7 @@ class Sorter:
   def sort(self):
     raise NotImplementedError("Must override sort")
 
+
 class Insertion(Sorter):
   def __init__(self):
     pass
@@ -64,6 +65,7 @@ class Insertion(Sorter):
     self.steps = self.steps[:-1]
     self.final_status = self.steps_status[-1]
     self.steps_status = self.steps_status[:-1]
+
 
 class Selection(Sorter):
   def __init__(self):
@@ -112,12 +114,15 @@ class Quicksort(Sorter):
   def __str__(self):
     super().__str__()
 
-  def build_status(self,i,l):
+  def build_status(self,l,i,lo=-1,hi=-1):
     ll = []
+    m = min(i,lo,hi)
     for j in range(l):
       if j == i:
         ll.append(2)
-      elif j < i:
+      elif j == lo or j == hi:
+        ll.append(3)
+      elif j < m:
         ll.append(1)
       else:
         ll.append(0)
@@ -128,13 +133,13 @@ class Quicksort(Sorter):
     hi = len(data) -1
     len_d = len(data)
     self.init_step = dc(data)
-    self.init_status = self.build_status(hi,len_d)
+    self.init_status = self.build_status(len_d,hi)
     self.steps = []
     self.steps_status =[]
     self.run_sort(data,lo,hi)
 
     self.final_step = dc(data)
-    self.final_status = self.build_status(hi+1,len_d)
+    self.final_status = self.build_status(len_d,hi+1,len_d,len_d)
    
 
   def partition(self,data,lo,hi):
@@ -154,18 +159,100 @@ class Quicksort(Sorter):
      if lo < hi:
       p = self.partition(data,lo,hi)
       self.steps.append(dc(data))
-      self.steps_status.append(self.build_status(p,len(data)))
+      self.steps_status.append(self.build_status(len(data),p,lo,hi))
       
       self.run_sort(data,lo,p-1)
       self.run_sort(data,p+1,hi)
-"""
-l = [1,8,7,9,6,5,4,3,2,44]
-s = Quicksort()
-s.sort(l,0,len(l)-1)
 
-print(s.init_step)
-print(s.final_step)
-print()
-for step in s.steps:
+
+class Bubblesort(Sorter):
+  def __init__(self):
+    pass
+  def __str__(self):
+    super().__str__()
+
+  def build_status(self,l,i=-1,ii=-1,n=-1):
+    ll = []
+    for j in range(l):
+      if j == i or j == ii:
+        ll.append(2)
+      elif n != -1 and j >= n:
+        ll.append(1)
+      else:
+        ll.append(0)
+    return ll
+
+  def sort(self,data):
+    len_d = len(data)
+
+    self.init_step = dc(data)
+    self.init_status = self.build_status(len_d)
+    self.steps = []
+    self.steps_status =[]
+
+    swapped = True
+    n = len_d
+    while swapped:
+      swapped = False
+      for i in range(1,len_d,1):
+        self.steps.append(dc(data))
+        self.steps_status.append(self.build_status(len_d,i-1,i,n))
+
+        if data[i-1] > data[i]:
+          self.swap(data,i-1,i)
+          swapped = True
+      n -= 1
+
+    self.final_step = dc(data)
+    self.final_status = self.build_status(len_d,len_d,len_d,-2)
+
+class Bubblesort_Optimized(Sorter):
+  def __init__(self):
+    pass
+  def __str__(self):
+    super().__str__()
+
+  def build_status(self,l,i=-1,ii=-1,n=-1):
+    ll = []
+    for j in range(l):
+      if j == i or j == ii:
+        ll.append(2)
+      elif n != -1 and j >= n:
+        ll.append(1)
+      else:
+        ll.append(0)
+    return ll
+
+  def sort(self,data):
+    len_d = len(data)
+
+    self.init_step = dc(data)
+    self.init_status = self.build_status(len_d)
+    self.steps = []
+    self.steps_status =[]
+
+    n = len_d
+    swapped = True
+    while swapped:
+      swapped = False
+      for i in range(1,n,1):
+        self.steps.append(dc(data))
+        self.steps_status.append(self.build_status(len_d,i-1,i,n))
+
+        if data[i-1] > data[i]:
+          self.swap(data,i-1,i)
+          swapped = True
+      n -= 1
+
+    self.final_step = dc(data)
+    self.final_status = self.build_status(len_d,len_d,len_d,-2)
+"""
+l = [5,1,4,2,8]
+b = Bubblesort_Optimized()
+b.sort(l)
+print(b.init_step)
+for step in b.steps:
   print(step)
+print(b.final_step)
+print("allo")
 """

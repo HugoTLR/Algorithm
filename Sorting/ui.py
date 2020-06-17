@@ -64,6 +64,10 @@ class Ui(QtWidgets.QMainWindow):
       self.sorter = Selection()
     elif item == "Quicksort":
       self.sorter = Quicksort()
+    elif item == "Bubblesort":
+      self.sorter = Bubblesort()
+    elif item == "Bubblesort_Optimized":
+      self.sorter = Bubblesort_Optimized()
 
     self.sorter.sort(dc(data))
     self.total_steps = len(self.sorter.steps)

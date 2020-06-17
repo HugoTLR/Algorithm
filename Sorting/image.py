@@ -4,6 +4,7 @@ import numpy as np
 WHITE = (255,255,255)
 GRAY = (125,125,125)
 BLUE = (0,0,255)
+GREEN = (0,255,0)
 
 MIN_W = 640
 MIN_H = 480
@@ -37,6 +38,8 @@ class ImageBuilder:
         color = WHITE
       elif self.data_status[i] == 2:
         color = BLUE
+      elif self.data_status[i] == 3:
+        color = GREEN
       cv.rectangle(self.im,tl,br,color,-1)
 
 
