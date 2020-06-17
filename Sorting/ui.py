@@ -51,10 +51,10 @@ class Ui(QtWidgets.QMainWindow):
     self.build_visuals(init=init,final=final)
 
   def slt_sort_run(self):
-    l = [2,8,7,3,4,9,5,6,1]
+    self.current_step = -1
     item = self.lst_func.currentItem().text()
-
     data = self.get_data_from_file()
+    print(f"Sorting {len(data)} items")
     if data == None:
       return
 
@@ -64,10 +64,11 @@ class Ui(QtWidgets.QMainWindow):
       self.sorter = Selection()
 
     self.sorter.sort(dc(data))
-    self.current_step = 0
     self.total_steps = len(self.sorter.steps)
     self.sld_steps.setMaximum(self.total_steps)
-    self.build_visuals()
+
+    self.sld_steps.setValue(-1)
+    self.build_visuals(init=True)
 
   def build_visuals(self,init=False,final=False):
     #print(f"{self.current_step=} {self.total_steps=}")
@@ -83,6 +84,11 @@ class Ui(QtWidgets.QMainWindow):
     self.im_builder.set_data(data,status)
     self.im_builder.build_image()
     # self.lbl_visu.setText(self.sorter.__str__())
-    self.lbl_visu.setPixmap(QtGui.QPixmap(QtGui.QImage(self.im_builder.im.data,self.im_builder.w,self.im_builder.h,QtGui.QImage.Format_RGB888)))
+
+    q_im = QtGui.QImage(self.im_builder.im.data,self.im_builder.w,self.im_builder.h,QtGui.QImage.Format_RGB888)
+
+    q_pix = QtGui.QPixmap.fromImage(q_im)
+
+    self.lbl_visu.setPixmap(q_pix)
     self.lbl_step.setText(text)
 

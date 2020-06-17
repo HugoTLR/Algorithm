@@ -5,6 +5,25 @@ WHITE = (255,255,255)
 GRAY = (125,125,125)
 BLUE = (0,0,255)
 
+MIN_W = 640
+MIN_H = 480
+
+MAX_W = 1280
+MAX_H = 960
+
+OFF_WIDTH = int(int(MAX_H/20))
+
+
+def pgcd(a,b):
+  while b != 0:
+    r = a%b
+    a,b = b,r
+  return a
+
+def ppcm(a,b):
+  if a == 0 or b == 0:
+    return 0
+  return (a*b)//pgcd(a,b)
 class ImageBuilder:
   def __init__(self,w,h):
     self.w = w
@@ -14,8 +33,7 @@ class ImageBuilder:
   def build_image(self):
     self.im = np.zeros((self.h,self.w,3),dtype=np.uint8)
     for i,d in enumerate(self.data):
-      tl,br = (i*self.skipper+1,int(self.h-d*self.h)),(i*self.skipper+self.skipper-1,self.h)
-
+      tl,br = (i*self.skipper,int(self.h-d*self.h)),(i*self.skipper+self.skipper,self.h)
       color = GRAY
       if self.data_status[i] == 1:
         color = WHITE
@@ -27,8 +45,26 @@ class ImageBuilder:
   def set_data(self,data,data_status):
     self.data = self.norm(data)
     self.data_status = data_status
-    self.skipper = self.w // len(self.data)
+
+
+    self.get_image_property()
+
+    #self.skipper = self.w // len(self.data)
+
+
+  def get_image_property(self):
+    len_d = len(self.data)
+    if len_d < MIN_W:
+      self.w = MIN_W
+      self.h = MIN_H
+      self.skipper = self.w//len_d
+    else:
+      self.skipper = MAX_W//len_d
+      self.w = self.skipper*len_d
+      self.h = int((self.w/4)*3) #4/3 ratio image
+    
 
   def norm(self,l):
     return [(float(i))/(max(l)) for i in l]
+
 
