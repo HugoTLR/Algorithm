@@ -43,11 +43,8 @@ class ImageBuilder:
   def set_data(self,data,data_status):
     self.data = self.norm(data)
     self.data_status = data_status
-
-
     self.get_image_property()
 
-    #self.skipper = self.w // len(self.data)
 
 
   def get_image_property(self):

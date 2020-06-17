@@ -22,7 +22,6 @@ class Sorter:
   def build_status(self):
     raise NotImplementedError("Must override build_status")
 
-
   def sort(self):
     raise NotImplementedError("Must override sort")
 
@@ -107,50 +106,66 @@ class Selection(Sorter):
     self.final_status = [1 for _ in range(len_l)]
 
 
+class Quicksort(Sorter):
+  def __init__(self):
+    pass
+  def __str__(self):
+    super().__str__()
+
+  def build_status(self,i,l):
+    ll = []
+    for j in range(l):
+      if j == i:
+        ll.append(2)
+      elif j < i:
+        ll.append(1)
+      else:
+        ll.append(0)
+    return ll
+
+  def sort(self,data):
+    lo = 0
+    hi = len(data) -1
+    len_d = len(data)
+    self.init_step = dc(data)
+    self.init_status = self.build_status(hi,len_d)
+    self.steps = []
+    self.steps_status =[]
+    self.run_sort(data,lo,hi)
+
+    self.final_step = dc(data)
+    self.final_status = self.build_status(hi+1,len_d)
+   
+
+  def partition(self,data,lo,hi):
+    pivot = data[hi]
+    i = lo
+
+
+    for j in range(lo,hi,1):
+      if data[j] < pivot:
+        self.swap(data,i,j)
+        i += 1
+    self.swap(data,i,hi)
+    return i
+
+  #Bcs of recursivity we need to initialize init step outside the function
+  def run_sort(self,data,lo,hi):
+     if lo < hi:
+      p = self.partition(data,lo,hi)
+      self.steps.append(dc(data))
+      self.steps_status.append(self.build_status(p,len(data)))
+      
+      self.run_sort(data,lo,p-1)
+      self.run_sort(data,p+1,hi)
 """
-def bottom_up_merge_sort(self,l):
-  self.steps = []
-  n = len(l)
-  # b = dc(l)
-  b = []
-  width = 1
-  while width < n:
-    print(f"{width=}")
-    i = 0
-    for i in range(0,n,i + 2*width):
-      print(f"{l=}")
-      self.bottom_up_merge(l,i,min(i+width,n),min(i+2*width,n),b)
+l = [1,8,7,9,6,5,4,3,2,44]
+s = Quicksort()
+s.sort(l,0,len(l)-1)
 
-    for i in range(n):
-      l[i] = b[i]
-    self.steps.append(dc(l))
-    width *= 2
-
-def bottom_up_merge(self,l,ileft,iright,iend,b):
-  i = ileft
-  j = iright
-  for k in range(ileft,iend):
-    if (i < iright and (j >= iend or l[i] <= l[j])):
-      b[k] = l[i]
-      i += 1
-    else:
-      b[k] = l[j]
-      j += 1
-
-def heapsort(self,l):
-  self.steps = [dc(l)]
+print(s.init_step)
+print(s.final_step)
+print()
+for step in s.steps:
+  print(step)
 """
-    
-
-# l = [2,8,7,3,4,9,5,6,1]
-# sorter = Sorter()
-# sorter.insertion(dc(l))
-# print(sorter)
-
-# sorter.selection(dc(l))
-# print(sorter)
-
-# Not working
-# sorter.bottom_up_merge_sort(dc(l))
-# print(sorter)
-

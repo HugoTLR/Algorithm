@@ -62,6 +62,8 @@ class Ui(QtWidgets.QMainWindow):
       self.sorter = Insertion()
     elif item == "Selection":
       self.sorter = Selection()
+    elif item == "Quicksort":
+      self.sorter = Quicksort()
 
     self.sorter.sort(dc(data))
     self.total_steps = len(self.sorter.steps)
