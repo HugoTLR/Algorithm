@@ -70,39 +70,21 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QPushButton" name="btn_ini">
-            <property name="text">
-             <string>Initial State</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_step_b">
-            <property name="text">
-             <string>&lt;</string>
-            </property>
-           </widget>
-          </item>
+         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="50,0">
           <item>
            <widget class="QLabel" name="lbl_step">
             <property name="text">
              <string>TextLabel</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_step_f">
-            <property name="text">
-             <string>&gt;</string>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_fin">
-            <property name="text">
-             <string>Final State</string>
+           <widget class="QSlider" name="sld_steps">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -145,61 +127,13 @@
    </hints>
   </connection>
   <connection>
-   <sender>btn_step_b</sender>
-   <signal>clicked()</signal>
+   <sender>sld_steps</sender>
+   <signal>valueChanged(int)</signal>
    <receiver>MainWindow</receiver>
-   <slot>slt_prev_step()</slot>
+   <slot>slt_sld_step()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>366</x>
-     <y>607</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>455</x>
-     <y>363</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_step_f</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slt_next_step()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>795</x>
-     <y>607</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>455</x>
-     <y>363</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_ini</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slt_init_state()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>323</x>
-     <y>607</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>455</x>
-     <y>363</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_fin</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slt_fin_state()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>838</x>
+     <x>473</x>
      <y>607</y>
     </hint>
     <hint type="destinationlabel">
@@ -215,5 +149,6 @@
   <slot>slt_next_step()</slot>
   <slot>slt_init_state()</slot>
   <slot>slt_fin_state()</slot>
+  <slot>slt_sld_step()</slot>
  </slots>
 </ui>

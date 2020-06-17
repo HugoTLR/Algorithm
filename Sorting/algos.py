@@ -10,7 +10,7 @@ class Sorter:
   def __str__(self):
     r = ""
     if self.steps:
-      for s,ss in zip(self.steps,sel.steps_status): r = r + str(s) + '\t' + str(ss) + "\n"
+      for s,ss in zip(self.steps,self.steps_status): r = r + str(s) + '\t' + str(ss) + "\n"
     return r
 
   def swap(self,l,i,j):
@@ -45,7 +45,7 @@ class Insertion(Sorter):
 
   def sort(self,l):
     self.init_step = dc(l)
-    self.init_status = self.build_insertion_status(0,len(l))
+    self.init_status = self.build_status(0,len(l))
     self.steps = []
     self.steps_status = []
 
@@ -100,7 +100,6 @@ class Selection(Sorter):
       self.steps.append(dc(l))
       if jmin != i:
         l = self.swap(l,i,jmin)
-
 
     self.final_step = dc(l)
     self.final_status = [1 for _ in range(len_l)]
