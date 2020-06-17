@@ -13,7 +13,7 @@ class Ui(QtWidgets.QMainWindow):
 
     self.sorter = None
     print(self.get_implemented_algorithm())
-    self.im_builder = ImageBuilder(640,480)
+    self.im_builder = ImageBuilder()
 
     # -1 is the key for initial state
     self.sld_steps.setMinimum(-1)
