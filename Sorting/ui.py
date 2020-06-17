@@ -3,6 +3,7 @@ import sys
 from algos import *
 from image import ImageBuilder
 import inspect
+from glob import glob
 
 class Ui(QtWidgets.QMainWindow):
   def __init__(self):
@@ -18,6 +19,7 @@ class Ui(QtWidgets.QMainWindow):
     self.sld_steps.setMinimum(-1)
 
     self.populate_algo_list()
+    self.populate_data_list()
 
     self.show()
 
@@ -27,7 +29,20 @@ class Ui(QtWidgets.QMainWindow):
   def populate_algo_list(self):
     for algorithm in self.get_implemented_algorithm():
       self.lst_func.addItem(algorithm)
-  
+
+  def populate_data_list(self):
+    for file in glob("./Data/*.txt"):
+      f_name = file.split('\\')[-1]
+      self.lst_data.addItem(f_name)
+
+  def get_data_from_file(self):
+    try:
+      f_name = self.lst_data.currentItem().text()
+    except AttributeError:
+      return None
+    txt = open(f"./Data/{f_name}",'r').read()
+    return [int(i) for i in txt.split(',')]
+
   def slt_sld_step(self):
     self.current_step = self.sld_steps.value()
     init,final = False,False
@@ -39,19 +54,23 @@ class Ui(QtWidgets.QMainWindow):
     l = [2,8,7,3,4,9,5,6,1]
     item = self.lst_func.currentItem().text()
 
+    data = self.get_data_from_file()
+    if data == None:
+      return
+
     if item == "Insertion":
       self.sorter = Insertion()
     elif item == "Selection":
       self.sorter = Selection()
 
-    self.sorter.sort(dc(l))
+    self.sorter.sort(dc(data))
     self.current_step = 0
     self.total_steps = len(self.sorter.steps)
     self.sld_steps.setMaximum(self.total_steps)
     self.build_visuals()
 
   def build_visuals(self,init=False,final=False):
-    print(f"{self.current_step=} {self.total_steps=}")
+    #print(f"{self.current_step=} {self.total_steps=}")
     text = f"Step {self.current_step+1} / {self.total_steps}"
     if init:
       data,status = self.sorter.init_step,self.sorter.init_status
