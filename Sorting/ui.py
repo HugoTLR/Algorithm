@@ -72,6 +72,8 @@ class Ui(QtWidgets.QMainWindow):
       self.sorter = Bubblesort_Optimized_2()
     elif item == "Combsort":
       self.sorter = Combsort()
+    elif item == "Gnomesort":
+      self.sorter = Gnomesort()
 
 
     self.sorter.sort(dc(data))

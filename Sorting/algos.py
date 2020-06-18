@@ -332,6 +332,46 @@ class Combsort(Sorter):
     self.final_step = dc(data)
     self.final_status = self.build_status(len_d,len_d,-1)
 
+
+class Gnomesort(Sorter):
+  def __init__(self):
+    pass
+  def __str__(self):
+    return super().__str__()
+
+  def build_status(self,l,i):
+    ll = []
+    for j in range(l):
+      if j == i:
+        ll.append(2)
+      elif j < i:
+        ll.append(1)
+      else:
+        ll.append(0)
+    return ll
+  def sort(self,data):
+    pos = 0
+    len_d = len(data)
+
+    self.init_step = dc(data)
+    self.init_status = self.build_status(len_d,-1)
+    self.steps = []
+    self.steps_status =[]
+
+    while pos < len_d:
+      self.steps.append(dc(data))
+      self.steps_status.append(self.build_status(len_d,pos))
+      if pos == 0 or data[pos] >= data[pos-1]:
+        pos += 1
+      else:
+        self.swap(data,pos,pos-1)
+        pos -= 1
+
+
+    self.final_step = dc(data)
+    self.final_status = self.build_status(len_d,len_d)
+
+
 l = [5,1,4,2,8]
 # b = Bubblesort_Optimized_2()
 # b.sort(dc(l))
@@ -350,3 +390,10 @@ l = [5,1,4,2,8]
 # # print(c.final_step)
 # for step in c.steps:
 #   print(step)
+
+g = Gnomesort()
+g.sort(dc(l))
+print(g.init_step)
+for step in g.steps:
+  print(step)
+print(g.final_step)
