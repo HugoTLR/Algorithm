@@ -1,9 +1,7 @@
 from copy import deepcopy as dc
+import math
 
 class Sorter:
-  #0 For unchecked
-  #2 for actual checked
-  # 1 for done with
   def __init__(self):
     pass
 
@@ -246,13 +244,109 @@ class Bubblesort_Optimized(Sorter):
 
     self.final_step = dc(data)
     self.final_status = self.build_status(len_d,len_d,len_d,-2)
-"""
+
+class Bubblesort_Optimized_2(Sorter):
+  def __init__(self):
+    pass
+  def __str__(self):
+    return super().__str__()
+
+  def build_status(self,l,i=-1,ii=-1,n=-1):
+    ll = []
+    for j in range(l):
+      if j == i or j == ii:
+        ll.append(2)
+      elif n != -1 and j >= n:
+        ll.append(1)
+      else:
+        ll.append(0)
+    return ll
+
+  def sort(self,data):
+    len_d = len(data)
+    self.init_step = dc(data)
+    self.init_status = self.build_status(len_d)
+    self.steps = []
+    self.steps_status =[]
+
+    n = len_d
+    while n >= 1:
+      new_n = 0
+      for i in range(1,n,1):
+        self.steps.append(dc(data))
+        self.steps_status.append(self.build_status(len_d,i-1,i,n))
+        if data[i-1] > data[i]:
+          self.swap(data,i-1,i)
+          new_n = i
+      n = new_n
+    self.final_step = dc(data)
+    self.final_status = self.build_status(len_d,len_d,len_d,-2)
+
+class Combsort(Sorter):
+  def __init__(self):
+    pass
+  def __str__(self):
+    return super().__str_()
+
+
+  def build_status(self,l,i,gapi):
+    ll = []
+    for j in range(l):
+      if j == i:
+        ll.append(2)
+      elif j == gapi:
+        ll.append(3)
+      elif j < i:
+        ll.append(1)
+      else:
+        ll.append(0)
+    return ll
+  def sort(self,data):
+    len_d = len(data)
+
+    self.init_step = dc(data)
+    self.init_status = self.build_status(len_d,-1,-1)
+    self.steps = []
+    self.steps_status =[]
+
+    gap = len_d
+    shrink = 1.3 #Constant factor
+    is_sorted = False
+
+    while not is_sorted:
+      gap = math.floor(gap/shrink)
+      if gap <= 1:
+        gap = 1
+        is_sorted = True
+
+      i = 0
+      while i + gap < len_d:
+        self.steps.append(dc(data))
+        self.steps_status.append(self.build_status(len_d,i,i+gap))
+        if data[i] > data[i+gap]:
+          self.swap(data,i,i+gap)
+          is_sorted = False
+        i += 1
+
+
+    self.final_step = dc(data)
+    self.final_status = self.build_status(len_d,len_d,-1)
+
 l = [5,1,4,2,8]
-b = Bubblesort_Optimized()
-b.sort(l)
-print(b.init_step)
-for step in b.steps:
-  print(step)
-print(b.final_step)
-print("allo")
-"""
+# b = Bubblesort_Optimized_2()
+# b.sort(dc(l))
+# print(len(b.steps))
+
+# bb = Bubblesort_Optimized()
+# bb.sort(dc(l))
+# print(len(bb.steps))
+
+# bbb = Bubblesort()
+# bbb.sort(dc(l))
+# print(len(bbb.steps))
+
+# c = Combsort()
+# c.sort(dc(l))
+# # print(c.final_step)
+# for step in c.steps:
+#   print(step)
