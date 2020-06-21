@@ -1,5 +1,6 @@
 import sys
-from tab_sorting import Tab_Sorting
+from envvar import UIS_FOLDER
+from Widgets.tab_sorter import Tab_Sorter
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QMainWindow, QTabWidget
 from PyQt5.QtCore import Qt
@@ -12,7 +13,7 @@ class App(QMainWindow):
   def __init__(self):
     super(App,self).__init__()
     #Load UI From ui file
-    loadUi('./app.ui',self)
+    loadUi(f'{UIS_FOLDER}/app.ui',self)
 
 
     #Initialise TabWidget
@@ -28,4 +29,4 @@ class App(QMainWindow):
     self.show()
 
   def build_tabs(self):
-    self.tab_widget.addTab(Tab_Sorting(),"Sorting")
+    self.tab_widget.addTab(Tab_Sorter(),"Sorting")

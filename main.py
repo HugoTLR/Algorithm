@@ -1,5 +1,5 @@
 import sys
-from app import App
+from Widgets.app import App
 from PyQt5.QtWidgets import QApplication
 
 #Main file

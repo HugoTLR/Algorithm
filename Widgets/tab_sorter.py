@@ -1,17 +1,19 @@
 import sys
+from envvar import UIS_FOLDER,DATA_FOLDER
 from glob import glob
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QImage,QPixmap
 from PyQt5.QtWidgets import QWidget
-from Sorting.algos import *
-from Sorting.image import ImageBuilder
+
+from Classes.sorter import *
+from image import ImageBuilder
 
 
-class Tab_Sorting(QWidget):
+class Tab_Sorter(QWidget):
     def __init__(self):
-      super(Tab_Sorting,self).__init__()
+      super(Tab_Sorter,self).__init__()
       #Load UI From ui file
-      loadUi(f'./tab_sorting.ui',self) #Load Ui From QT
+      loadUi(f'{UIS_FOLDER}/tab_sorter.ui',self) #Load Ui From QT
 
       self.im_builder = ImageBuilder()
       self.sorter = None
@@ -29,7 +31,7 @@ class Tab_Sorting(QWidget):
         self.lst_func.addItem(algorithm)
 
     def populate_data_list(self):
-      for file in glob("./Sorting/Data/*.txt"):
+      for file in glob(f"{DATA_FOLDER}/Sorter/*.txt"):
         f_name = file.split('\\')[-1]
         self.lst_data.addItem(f_name)
 
@@ -38,7 +40,7 @@ class Tab_Sorting(QWidget):
         f_name = self.lst_data.currentItem().text()
       except AttributeError:
         return None
-      txt = open(f"./Sorting/Data/{f_name}",'r').read()
+      txt = open(f"{DATA_FOLDER}/Sorter/{f_name}",'r').read()
       return [int(i) for i in txt.split(',')]
 
     def slt_sld_step(self,val):
