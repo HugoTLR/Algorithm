@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>tab_sorter</class>
- <widget class="QWidget" name="tab_sorter">
+ <class>tab_pathfinder</class>
+ <widget class="QWidget" name="tab_pathfinder">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,9 +14,6 @@
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
-   <property name="sizeConstraint">
-    <enum>QLayout::SetFixedSize</enum>
-   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,75">
      <property name="sizeConstraint">
@@ -129,42 +126,5 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>btn_run</sender>
-   <signal>clicked()</signal>
-   <receiver>tab_sorter</receiver>
-   <slot>slt_sort_run()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>138</x>
-     <y>525</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>462</x>
-     <y>273</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sld_steps</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>tab_sorter</receiver>
-   <slot>slt_sld_step()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>594</x>
-     <y>526</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>462</x>
-     <y>273</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
- <slots>
-  <slot>slt_sld_step()</slot>
-  <slot>slt_sort_run()</slot>
- </slots>
+ <connections/>
 </ui>
