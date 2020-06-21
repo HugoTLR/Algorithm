@@ -1,13 +1,17 @@
-from PyQt5 import uic, QtWidgets, QtGui, QtCore
 import sys
+from glob import glob
+from PyQt5.uic import loadUi
+from PyQt5.QtGui import QImage,QPixmap
+from PyQt5.QtWidgets import QWidget
 from Sorting.algos import *
 from Sorting.image import ImageBuilder
-from glob import glob
-class Tab_Sorting(QtWidgets.QWidget):
+
+
+class Tab_Sorting(QWidget):
     def __init__(self):
       super(Tab_Sorting,self).__init__()
       #Load UI From ui file
-      uic.loadUi(f'./tab_sorting.ui',self) #Load Ui From QT
+      loadUi(f'./tab_sorting.ui',self) #Load Ui From QT
 
       self.im_builder = ImageBuilder()
       self.sorter = None
@@ -77,7 +81,6 @@ class Tab_Sorting(QtWidgets.QWidget):
       self.sld_steps.setValue(-1)
       self.build_visuals(init=True)
 
-      # self.setFixedSize(self.sizeHint())
 
     def build_visuals(self,init=False,final=False):
       #print(f"{self.current_step=} {self.total_steps=}")
@@ -92,11 +95,10 @@ class Tab_Sorting(QtWidgets.QWidget):
         data,status = self.sorter.steps[self.current_step],self.sorter.steps_status[self.current_step]
       self.im_builder.set_data(data,status)
       self.im_builder.build_image()
-      # self.lbl_visu.setText(self.sorter.__str__())
 
-      q_im = QtGui.QImage(self.im_builder.im.data,self.im_builder.w,self.im_builder.h,QtGui.QImage.Format_RGB888)
+      q_im = QImage(self.im_builder.im.data,self.im_builder.MAX_W,self.im_builder.MAX_H,QImage.Format_RGB888)
 
-      q_pix = QtGui.QPixmap.fromImage(q_im)
+      q_pix = QPixmap.fromImage(q_im)
 
       self.lbl_visu.setPixmap(q_pix)
       self.lbl_step.setText(text)
