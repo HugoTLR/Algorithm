@@ -370,30 +370,3 @@ class Gnomesort(Sorter):
 
     self.final_step = dc(data)
     self.final_status = self.build_status(len_d,len_d)
-
-
-l = [5,1,4,2,8]
-# b = Bubblesort_Optimized_2()
-# b.sort(dc(l))
-# print(len(b.steps))
-
-# bb = Bubblesort_Optimized()
-# bb.sort(dc(l))
-# print(len(bb.steps))
-
-# bbb = Bubblesort()
-# bbb.sort(dc(l))
-# print(len(bbb.steps))
-
-# c = Combsort()
-# c.sort(dc(l))
-# # print(c.final_step)
-# for step in c.steps:
-#   print(step)
-
-g = Gnomesort()
-g.sort(dc(l))
-print(g.init_step)
-for step in g.steps:
-  print(step)
-print(g.final_step)

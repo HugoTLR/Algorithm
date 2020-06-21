@@ -1,7 +1,7 @@
-from PyQt5 import uic, QtWidgets, QtGui
+from PyQt5 import uic, QtWidgets, QtGui, QtCore
 import sys
-from algos import *
-from image import ImageBuilder
+from Sorting.algos import *
+from Sorting.image import ImageBuilder
 import inspect
 from glob import glob
 
@@ -9,7 +9,7 @@ class Ui(QtWidgets.QMainWindow):
   def __init__(self):
     super(Ui,self).__init__()
     #Load UI From ui file
-    uic.loadUi('../layout.ui',self) #Load Ui From QT
+    uic.loadUi('./layout.ui',self) #Load Ui From QT
 
     self.sorter = None
     print(self.get_implemented_algorithm())
@@ -18,10 +18,13 @@ class Ui(QtWidgets.QMainWindow):
     # -1 is the key for initial state
     self.sld_steps.setMinimum(-1)
 
+
     self.populate_algo_list()
     self.populate_data_list()
 
+    self.setWindowState(QtCore.Qt.WindowMaximized);
     self.show()
+
 
   def get_implemented_algorithm(self):
     return [cls.__name__ for cls in Sorter.__subclasses__()]
@@ -31,7 +34,7 @@ class Ui(QtWidgets.QMainWindow):
       self.lst_func.addItem(algorithm)
 
   def populate_data_list(self):
-    for file in glob("./Data/*.txt"):
+    for file in glob("./Sorting/Data/*.txt"):
       f_name = file.split('\\')[-1]
       self.lst_data.addItem(f_name)
 
@@ -40,11 +43,11 @@ class Ui(QtWidgets.QMainWindow):
       f_name = self.lst_data.currentItem().text()
     except AttributeError:
       return None
-    txt = open(f"./Data/{f_name}",'r').read()
+    txt = open(f"./Sorting/Data/{f_name}",'r').read()
     return [int(i) for i in txt.split(',')]
 
-  def slt_sld_step(self):
-    self.current_step = self.sld_steps.value()
+  def slt_sld_step(self,val):
+    self.current_step = val
     init,final = False,False
     if self.current_step == -1: init = True
     elif self.current_step == self.total_steps: final = True
@@ -82,6 +85,8 @@ class Ui(QtWidgets.QMainWindow):
 
     self.sld_steps.setValue(-1)
     self.build_visuals(init=True)
+
+    # self.setFixedSize(self.sizeHint())
 
   def build_visuals(self,init=False,final=False):
     #print(f"{self.current_step=} {self.total_steps=}")
