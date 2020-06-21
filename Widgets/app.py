@@ -27,7 +27,7 @@ class App(QMainWindow):
     self.build_tabs()
     self.setCentralWidget(self.tab_widget) 
 
-    self.setWindowState(Qt.WindowMaximized);
+    # self.setWindowState(Qt.WindowMaximized);
     self.show()
 
   def build_tabs(self):

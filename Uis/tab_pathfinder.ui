@@ -126,5 +126,25 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btn_run</sender>
+   <signal>clicked()</signal>
+   <receiver>tab_pathfinder</receiver>
+   <slot>slt_btn_run()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>138</x>
+     <y>525</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>462</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slt_btn_run()</slot>
+ </slots>
 </ui>

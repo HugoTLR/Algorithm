@@ -17,7 +17,7 @@ class Tab_Pathfinder(QWidget):
       loadUi(f'{UIS_FOLDER}/tab_pathfinder.ui',self) #Load Ui From QT
 
       self.im_builder = ImageBuilder()
-      self.sorter = None
+      self.pathfinder = None
 
       self.populate_algo_list()
       self.populate_data_list()
@@ -42,7 +42,7 @@ class Tab_Pathfinder(QWidget):
       except AttributeError:
         return None
       txt = open(f"{DATA_FOLDER}/Pathfinder/{f_name}",'r').read()
-      return [int(i) for i in txt.split(',')]
+      return [[col for col in row] for row in txt.split('\n')]
 
     def slt_sld_step(self,val):
       self.current_step = val
@@ -51,18 +51,20 @@ class Tab_Pathfinder(QWidget):
       elif self.current_step == self.total_steps: final = True
       self.build_visuals(init=init,final=final)
 
-    def slt_sort_run(self):
+    def slt_btn_run(self):
       self.current_step = -1
       item = self.lst_func.currentItem().text()
       data = self.get_data_from_file()
-      print(f"Sorting {len(data)} items")
       if data == None:
         return
 
         ##FILL
+      if item == "Dijkstra":
+        self.pathfinder = Dijkstra()
 
+      self.pathfinder.solve(data)
       self.sld_steps.setValue(-1)
-      self.build_visuals(init=True)
+      #self.build_visuals(init=True)
 
 
     def build_visuals(self,init=False,final=False):
