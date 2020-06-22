@@ -84,7 +84,7 @@ class Tab_Pathfinder(QWidget):
       self.im_builder.set_data_arr(data)
       self.im_builder.build_image_arr()
 
-      q_im = QImage(self.im_builder.im.data,500,500,QImage.Format_RGB888)
+      q_im = QImage(self.im_builder.im.data,700,700,QImage.Format_RGB888)
 
       q_pix = QPixmap.fromImage(q_im)
 

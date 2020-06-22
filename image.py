@@ -16,8 +16,8 @@ class ImageBuilder:
   GREEN = (0,255,0)
 
 
-  MAX_W = 640
-  MAX_H = 480
+  MAX_W = 960
+  MAX_H = 720
 
   PATTERN_SIZE = 13
   def __init__(self):
@@ -54,7 +54,7 @@ class ImageBuilder:
       for i,col in enumerate(row):
         pattern = self.build_pattern(col)
         self.im[j*ImageBuilder.PATTERN_SIZE:j*ImageBuilder.PATTERN_SIZE+ImageBuilder.PATTERN_SIZE,i*ImageBuilder.PATTERN_SIZE:i*ImageBuilder.PATTERN_SIZE+ImageBuilder.PATTERN_SIZE] = pattern
-    self.im = cv.resize(self.im,(500,500),interpolation=cv.INTER_AREA)
+    self.im = cv.resize(self.im,(700,700),interpolation=cv.INTER_AREA)
 
   def build_pattern(self,value):
     pattern = np.zeros((ImageBuilder.PATTERN_SIZE,ImageBuilder.PATTERN_SIZE,3),dtype=np.uint8)

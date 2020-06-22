@@ -109,9 +109,20 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QMainWindow, QWidget { background-color: rgb(18, 18, 18); }
+QWidget {border: 0px; }
 QListWidget { background-color: rgba(31, 27, 36,200);
-						border: 2px dashed rgba(255,255,255,200);
-						color: white}</string>
+						border: 3px solid;
+						border-color: rgba(255, 255, 255, 175);
+						color: rgba(255,255,255,200);}
+
+QPushButton { background-color: rgba(31, 27, 36,200); 
+						color: rgba(255,255,255,200);
+						border: 3px solid;
+						border-color: rgba(255, 255, 255, 175);
+						border-radius: 5px;}
+QTabWidget::pane {border: 0;}
+QLabel {color: rgba(255,255,255,200);}
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
