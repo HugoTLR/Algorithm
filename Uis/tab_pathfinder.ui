@@ -143,8 +143,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>sld_steps</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>tab_pathfinder</receiver>
+   <slot>slt_sld_steps()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>594</x>
+     <y>526</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>462</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slt_btn_run()</slot>
+  <slot>slt_sld_steps()</slot>
  </slots>
 </ui>

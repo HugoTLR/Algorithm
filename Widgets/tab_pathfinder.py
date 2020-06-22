@@ -21,6 +21,7 @@ class Tab_Pathfinder(QWidget):
 
       self.populate_algo_list()
       self.populate_data_list()
+      self.sld_steps.setMinimum(-1)
 
       self.show()
 
@@ -44,7 +45,7 @@ class Tab_Pathfinder(QWidget):
       txt = open(f"{DATA_FOLDER}/Pathfinder/{f_name}",'r').read()
       return [[col for col in row] for row in txt.split('\n')]
 
-    def slt_sld_step(self,val):
+    def slt_sld_steps(self,val):
       self.current_step = val
       init,final = False,False
       if self.current_step == -1: init = True
@@ -63,25 +64,27 @@ class Tab_Pathfinder(QWidget):
         self.pathfinder = Dijkstra()
 
       self.pathfinder.solve(data)
+      self.total_steps = len(self.pathfinder.steps)
+      self.sld_steps.setMaximum(self.total_steps)
       self.sld_steps.setValue(-1)
-      #self.build_visuals(init=True)
+      self.build_visuals(init=True)
 
 
     def build_visuals(self,init=False,final=False):
-      #print(f"{self.current_step=} {self.total_steps=}")
+      print(f"{self.current_step=} {self.total_steps=}")
       text = f"Step {self.current_step+1} / {self.total_steps}"
       if init:
-        data,status = self.sorter.init_step,self.sorter.init_status
+        data = self.pathfinder.init_step
         text = "Initial State"
       elif final:
-        data,status = self.sorter.final_step,self.sorter.final_status
+        data = self.pathfinder.final_step
         text = "Final State"
       else:
-        data,status = self.sorter.steps[self.current_step],self.sorter.steps_status[self.current_step]
-      self.im_builder.set_data(data,status)
-      self.im_builder.build_image()
+        data = self.pathfinder.steps[self.current_step]
+      self.im_builder.set_data_arr(data)
+      self.im_builder.build_image_arr()
 
-      q_im = QImage(self.im_builder.im.data,self.im_builder.MAX_W,self.im_builder.MAX_H,QImage.Format_RGB888)
+      q_im = QImage(self.im_builder.im.data,500,500,QImage.Format_RGB888)
 
       q_pix = QPixmap.fromImage(q_im)
 

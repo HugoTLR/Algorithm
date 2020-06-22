@@ -21,6 +21,8 @@ class Tab_Sorter(QWidget):
       self.populate_algo_list()
       self.populate_data_list()
 
+      self.sld_steps.setMinimum(-1)
+
       self.show()
 
     def get_implemented_algorithm(self):
@@ -95,8 +97,8 @@ class Tab_Sorter(QWidget):
         text = "Final State"
       else:
         data,status = self.sorter.steps[self.current_step],self.sorter.steps_status[self.current_step]
-      self.im_builder.set_data(data,status)
-      self.im_builder.build_image()
+      self.im_builder.set_data_list(data,status)
+      self.im_builder.build_image_list()
 
       q_im = QImage(self.im_builder.im.data,self.im_builder.MAX_W,self.im_builder.MAX_H,QImage.Format_RGB888)
 
