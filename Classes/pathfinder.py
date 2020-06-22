@@ -30,8 +30,7 @@ class Pathfinder:
     neighbours = []
     for d in Pathfinder.DIR:
         n_pos = ( (pos[0]+d[0]), (pos[1]+d[1]))
-        print(f"{self.h=} {self.w=} {n_pos=}")
-        if n_pos[1] >= 0 and n_pos[1] < self.h and n_pos[0] >= 0 and n_pos[0] < self.w and self.grid[n_pos[1]][n_pos[0]] != '#':
+        if n_pos[1] >= 0 and n_pos[1] < self.h and n_pos[0] >= 0 and n_pos[0] < self.w and self.grid[n_pos[1]][n_pos[0]] != Pathfinder.SYMBOLS['WALL']:
             neighbours.append(n_pos)
     return neighbours
 
@@ -59,14 +58,13 @@ class Pathfinder:
                                 "pred":defaultdict(lambda:None,{})}
     self.find_start_pos()
     self.find_target_pos()
-    #print(self)
 
   def reconstruct_closest_path(self,t=None):
 
     g = self.target
+    #Debugging purpose
     if t != None:
       g = t
-    #print(self.graph[self.start])
 
     path = [g]
     while not g.__eq__(self.start):
@@ -118,6 +116,7 @@ class Dijkstra(Pathfinder):
 
 
   def compute_graph(self):
+    #Used to compute dijkstra for every cell to the target
     # for key in self.graph.keys():
     self.dijkstra(self.start)
     
@@ -133,11 +132,7 @@ class Dijkstra(Pathfinder):
     changed = False
     while Q:
       (d,u) = heappop(Q)
-
-
-
       nbs = self.graph[u]["neighbours"]
-
 
       status = self.build_status_map(VISITED,c=u,EXPLORING=nbs)
       

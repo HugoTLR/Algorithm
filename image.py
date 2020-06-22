@@ -15,11 +15,9 @@ class ImageBuilder:
   BLUE = (0,0,255)
   GREEN = (0,255,0)
 
-  MIN_W = 640
-  MIN_H = 480
 
-  MAX_W = 1024
-  MAX_H = 768
+  MAX_W = 640
+  MAX_H = 480
 
   PATTERN_SIZE = 13
   def __init__(self):
@@ -36,8 +34,8 @@ class ImageBuilder:
         color = ImageBuilder.COLORS["BLUE"]
       elif self.data_status[i] == 3:
         color = ImageBuilder.COLORS["GREEN"]
-      cv.rectangle(self.im,tl,br,color,-1)
-    self.im = cv.resize(self.im,(ImageBuilder.MAX_W,ImageBuilder.MAX_H),interpolation=cv.INTER_AREA)
+      cv.line(self.im,(i,int(self.h-d*self.h)),(i,self.h),color=color)
+    self.im = cv.resize(self.im,(ImageBuilder.MAX_W,ImageBuilder.MAX_H),interpolation=cv.INTER_AREA )
 
 
   def set_data_list(self,data,data_status):

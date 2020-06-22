@@ -71,7 +71,7 @@ class Tab_Pathfinder(QWidget):
 
 
     def build_visuals(self,init=False,final=False):
-      print(f"{self.current_step=} {self.total_steps=}")
+      # print(f"{self.current_step=} {self.total_steps=}")
       text = f"Step {self.current_step+1} / {self.total_steps}"
       if init:
         data = self.pathfinder.init_step
