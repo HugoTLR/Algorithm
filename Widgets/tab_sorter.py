@@ -10,32 +10,44 @@ from image import ImageBuilder
 
 
 class Tab_Sorter(QWidget):
-    def __init__(self):
-      super(Tab_Sorter,self).__init__()
-      #Load UI From ui file
-      loadUi(f'{UIS_FOLDER}/tab_sorter.ui',self) #Load Ui From QT
+    """
+    Class managing the Sorter Tab in our application
+    """
 
+    def __init__(self):
+      # Instantiate Widget and UI
+      super(Tab_Sorter,self).__init__()
+      loadUi(f'{UIS_FOLDER}/tab_sorter.ui',self)
+      # Instantiate Image wrapper and Algo Sorter
       self.im_builder = ImageBuilder()
       self.sorter = None
 
-      self.populate_algo_list()
-      self.populate_data_list()
-
-      self.sld_steps.setMinimum(0)
+      # Populate ListView with:
+        # Avaiable sorting algorithm
+        # Avaiable unsorted list
+      self.populate()
 
       self.show()
 
     def get_implemented_algorithm(self):
       return [cls.__name__ for cls in Sorter.__subclasses__()]
 
+
+    def populate(self):
+      self.populate_algo_list()
+      self.populate_data_list()
+
+
     def populate_algo_list(self):
       for algorithm in self.get_implemented_algorithm():
         self.lst_func.addItem(algorithm)
+
 
     def populate_data_list(self):
       for file in glob(f"{DATA_FOLDER}/Sorter/*.txt"):
         f_name = file.split('\\')[-1]
         self.lst_data.addItem(f_name)
+
 
     def get_data_from_file(self):
       try:
@@ -45,11 +57,18 @@ class Tab_Sorter(QWidget):
       txt = open(f"{DATA_FOLDER}/Sorter/{f_name}",'r').read()
       return [int(i) for i in txt.split(',')]
 
+
     def slt_sld_step(self,val):
+      """
+      Update our visual on slider changes
+      """
       self.current_step = val
       self.update_visual()
 
     def slt_sort_run(self):
+      """
+      Run algorithm using selected item in ListViews
+      """
       item = self.lst_func.currentItem().text()
       data = self.get_data_from_file()
       print(f"Sorting {len(data)} items")
@@ -73,7 +92,6 @@ class Tab_Sorter(QWidget):
       elif item == "Gnomesort":
         self.sorter = Gnomesort()
 
-
       self.sorter.sort(dc(data))
       self.total_steps = len(self.sorter.steps)-1
       self.sld_steps.setMaximum(self.total_steps)
@@ -81,6 +99,7 @@ class Tab_Sorter(QWidget):
       self.current_step = 0
       self.sld_steps.setValue(0)
       self.update_visual()
+
 
     def update_visual(self):
       if self.current_step == 0:
@@ -92,6 +111,7 @@ class Tab_Sorter(QWidget):
       img = self.build_image()
       self.lbl_visu.setPixmap(img)
       self.lbl_step.setText(text)
+
 
     def build_image(self):
       image = self.im_builder.build_image_list(self.sorter.steps[self.current_step],self.sorter.steps_status[self.current_step])

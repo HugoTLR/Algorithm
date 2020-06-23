@@ -61,6 +61,8 @@ class Tab_Pathfinder(QWidget):
       ##FILL
       if item == "Dijkstra":
         self.pathfinder = Dijkstra()
+      elif item == "AStar":
+        self.pathfinder = AStar()
 
       self.pathfinder.solve(data)
       self.total_steps = len(self.pathfinder.steps)-1

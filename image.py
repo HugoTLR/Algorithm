@@ -3,13 +3,14 @@ import numpy as np
 
 class ImageBuilder:
   COLORS = {"WHITE":(255,255,255),\
-              "GRAY":(125,125,125),\
+              "GRAY":(75,75,75),\
               "BLUE":(0,0,255),\
               "GREEN":(0,255,0),\
               "RED": (255,0,0),\
               "BLACK": (0,0,0),\
               "ORANGE":(255,125,0),\
-              "PURPLE":(125,0,255)}
+              "PURPLE":(125,0,255),\
+              "PINK":(255,0,125)}
 
   MAX_W = 960
   MAX_H = 720
@@ -20,7 +21,6 @@ class ImageBuilder:
     pass
 
   def build_image_list(self,data,status):
-
     h,w,data = self.format_list(data)
     im = np.zeros((h,w,3),dtype=np.uint8)
     for i,d in enumerate(data):
@@ -87,5 +87,8 @@ class ImageBuilder:
       color = ImageBuilder.COLORS["ORANGE"]
     elif value == 'E':
       color = ImageBuilder.COLORS["PURPLE"]
+    elif value == 'O':
+      color = ImageBuilder.COLORS["PINK"]
+
     return color
 
