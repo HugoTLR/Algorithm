@@ -20,6 +20,7 @@ class ImageBuilder:
   MAX_H = 720
 
   PATTERN_SIZE = 13
+  
   def __init__(self):
     pass
 

@@ -51,7 +51,7 @@ class Pathfinder:
     self.graph = defaultdict(lambda: [],self.graph)
     for j,row in enumerate(grid):
       for i,col in enumerate(row):
-        if col != '#': # remove wall
+        if col != '#': # avoid wall
           self.graph[(i,j)] = {"symbol":col,\
                                 "neighbours":self.find_valid_neighbours((i,j)),\
                                 "dist":defaultdict(lambda:maxsize,{}),\
@@ -69,7 +69,6 @@ class Pathfinder:
     path = [g]
     while not g.__eq__(self.start):
       g = self.graph[self.start]["pred"][g]
-
       path.append(g)
     return path[::-1]
 
@@ -85,17 +84,10 @@ class Dijkstra(Pathfinder):
     self.grid = grid
     self.w = len(grid[0])
     self.h = len(grid)
-
-
     self.instanciate_graph(grid)
     self.compute_graph()
 
-    # for k,v in self.graph.items():
-    
-      # print(f"{k}\t{v['neighbours']}\t{v['dist']}")
 
-    # path = self.reconstruct_closest_path()
-    # print(f"{path=}")
 
   def build_status_map(self,VISITED,c=None,EXPLORING=[],path=[]):
     base_grid = dc(self.grid)
