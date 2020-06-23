@@ -19,7 +19,6 @@ class Sorter:
 
   def build_status(self):
     raise NotImplementedError("Must override build_status")
-
   def sort(self):
     raise NotImplementedError("Must override sort")
 
@@ -42,10 +41,8 @@ class Insertion(Sorter):
     return ll
 
   def sort(self,l):
-    self.init_step = dc(l)
-    self.init_status = self.build_status(-1,len(l))
-    self.steps = [dc(l)]
-    self.steps_status = [self.build_status(0,len(l))]
+    self.steps = [dc(l),dc(l)]
+    self.steps_status = [self.build_status(-1,len(l)),self.build_status(0,len(l))]
 
     i,len_l = 1,len(l)
     while i < len_l:
@@ -59,10 +56,10 @@ class Insertion(Sorter):
       self.steps.append(dc(l))
       i += 1
 
-    self.final_step = self.steps[-1]
-    self.steps = self.steps[:-1]
-    self.final_status = self.steps_status[-1]
-    self.steps_status = self.steps_status[:-1]
+    # self.final_step = self.steps[-1]
+    # self.steps = self.steps[:-1]
+    # self.final_status = self.steps_status[-1]
+    # self.steps_status = self.steps_status[:-1]
 
 
 class Selection(Sorter):

@@ -21,7 +21,9 @@ class Tab_Pathfinder(QWidget):
 
       self.populate_algo_list()
       self.populate_data_list()
-      self.sld_steps.setMinimum(-1)
+      self.sld_steps.setMinimum(0)
+
+
 
       self.show()
 
@@ -47,46 +49,39 @@ class Tab_Pathfinder(QWidget):
 
     def slt_sld_steps(self,val):
       self.current_step = val
-      init,final = False,False
-      if self.current_step == -1: init = True
-      elif self.current_step == self.total_steps: final = True
-      self.build_visuals(init=init,final=final)
+      self.update_visual()
 
     def slt_btn_run(self):
-      self.current_step = -1
+      self.current_step = 0
       item = self.lst_func.currentItem().text()
       data = self.get_data_from_file()
       if data == None:
         return
 
-        ##FILL
+      ##FILL
       if item == "Dijkstra":
         self.pathfinder = Dijkstra()
 
       self.pathfinder.solve(data)
-      self.total_steps = len(self.pathfinder.steps)
+      self.total_steps = len(self.pathfinder.steps)-1
       self.sld_steps.setMaximum(self.total_steps)
-      self.sld_steps.setValue(-1)
-      self.build_visuals(init=True)
+      self.sld_steps.setValue(self.current_step)
+      self.update_visual()
 
 
-    def build_visuals(self,init=False,final=False):
-      # print(f"{self.current_step=} {self.total_steps=}")
-      text = f"Step {self.current_step+1} / {self.total_steps}"
-      if init:
-        data = self.pathfinder.init_step
-        text = "Initial State"
-      elif final:
-        data = self.pathfinder.final_step
-        text = "Final State"
+    def update_visual(self):
+      if self.current_step == 0:
+        text = "Initial Step"
+      elif self.current_step == self.total_steps:
+        text = "Final Step"
       else:
-        data = self.pathfinder.steps[self.current_step]
-      self.im_builder.set_data_arr(data)
-      self.im_builder.build_image_arr()
-
-      q_im = QImage(self.im_builder.im.data,700,700,QImage.Format_RGB888)
-
-      q_pix = QPixmap.fromImage(q_im)
-
-      self.lbl_visu.setPixmap(q_pix)
+        text = f"Step {self.current_step} / {self.total_steps}" 
+      img = self.build_image()
+      self.lbl_visu.setPixmap(img)
       self.lbl_step.setText(text)
+
+    def build_image(self):
+      image = self.im_builder.build_image_arr(self.pathfinder.steps[self.current_step])
+      q_pix = QPixmap.fromImage(QImage(image.data,image.shape[1],image.shape[0],QImage.Format_RGB888))
+
+      return q_pix

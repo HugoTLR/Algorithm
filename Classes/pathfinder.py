@@ -88,7 +88,6 @@ class Dijkstra(Pathfinder):
     self.compute_graph()
 
 
-
   def build_status_map(self,VISITED,c=None,EXPLORING=[],path=[]):
     base_grid = dc(self.grid)
     for V in VISITED:
@@ -114,8 +113,7 @@ class Dijkstra(Pathfinder):
     
   def dijkstra(self,source):
     status = self.build_status_map([])
-    self.init_step = status
-    self.steps = []
+    self.steps = [status]
     VISITED = []
     Q = []
     self.graph[source]["dist"][source] = 0
@@ -135,14 +133,12 @@ class Dijkstra(Pathfinder):
           self.graph[source]["dist"][nb] = alt
           self.graph[source]["pred"][nb] = u
           heappush(Q,(alt,nb))
-          VISITED.append(nb)
           changed = True
       if changed:
         self.steps.append(status)
       changed = False
 
     path = self.reconstruct_closest_path()
-    self.final_step = self.build_status_map(VISITED,path=path)
-    
+    self.steps.append(self.build_status_map(VISITED,path=path))
 
 

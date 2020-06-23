@@ -21,7 +21,7 @@ class Tab_Sorter(QWidget):
       self.populate_algo_list()
       self.populate_data_list()
 
-      self.sld_steps.setMinimum(-1)
+      self.sld_steps.setMinimum(0)
 
       self.show()
 
@@ -47,13 +47,9 @@ class Tab_Sorter(QWidget):
 
     def slt_sld_step(self,val):
       self.current_step = val
-      init,final = False,False
-      if self.current_step == -1: init = True
-      elif self.current_step == self.total_steps: final = True
-      self.build_visuals(init=init,final=final)
+      self.update_visual()
 
     def slt_sort_run(self):
-      self.current_step = -1
       item = self.lst_func.currentItem().text()
       data = self.get_data_from_file()
       print(f"Sorting {len(data)} items")
@@ -79,30 +75,25 @@ class Tab_Sorter(QWidget):
 
 
       self.sorter.sort(dc(data))
-      self.total_steps = len(self.sorter.steps)
+      self.total_steps = len(self.sorter.steps)-1
       self.sld_steps.setMaximum(self.total_steps)
 
-      self.sld_steps.setValue(-1)
-      self.build_visuals(init=True)
+      self.current_step = 0
+      self.sld_steps.setValue(0)
+      self.update_visual()
 
-
-    def build_visuals(self,init=False,final=False):
-      #print(f"{self.current_step=} {self.total_steps=}")
-      text = f"Step {self.current_step+1} / {self.total_steps}"
-      if init:
-        data,status = self.sorter.init_step,self.sorter.init_status
-        text = "Initial State"
-      elif final:
-        data,status = self.sorter.final_step,self.sorter.final_status
-        text = "Final State"
+    def update_visual(self):
+      if self.current_step == 0:
+        text = "Initial Step"
+      elif self.current_step == self.total_steps:
+        text = "Final Step"
       else:
-        data,status = self.sorter.steps[self.current_step],self.sorter.steps_status[self.current_step]
-      self.im_builder.set_data_list(data,status)
-      self.im_builder.build_image_list()
-
-      q_im = QImage(self.im_builder.im.data,self.im_builder.MAX_W,self.im_builder.MAX_H,QImage.Format_RGB888)
-
-      q_pix = QPixmap.fromImage(q_im)
-
-      self.lbl_visu.setPixmap(q_pix)
+        text = f"Step {self.current_step} / {self.total_steps}" 
+      img = self.build_image()
+      self.lbl_visu.setPixmap(img)
       self.lbl_step.setText(text)
+
+    def build_image(self):
+      image = self.im_builder.build_image_list(self.sorter.steps[self.current_step],self.sorter.steps_status[self.current_step])
+      q_pix = QPixmap.fromImage(QImage(image.data,image.shape[1],image.shape[0],QImage.Format_RGB888))
+      return q_pix
