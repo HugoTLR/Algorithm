@@ -4,3 +4,5 @@ Simple QT5 App to visualize several works:
 -Pathfinding algorithm
 -Vision algorithm
 -SLAM ??
+
+![Example](./readme.jpg)
