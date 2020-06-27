@@ -9,8 +9,8 @@ class ImageBuilder:
               "RED": (255,0,0),\
               "BLACK": (0,0,0),\
               "ORANGE":(255,125,0),\
-              "PURPLE":(125,0,255),\
-              "PINK":(255,0,125)}
+              "PURPLE":(200,0,255),\
+              "PINK":(255,0,200)}
 
   MAX_W = 960
   MAX_H = 720

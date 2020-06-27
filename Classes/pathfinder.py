@@ -164,8 +164,10 @@ class AStar(Pathfinder):
 
 
 
+  def dist(self,p1,p2):
+    return abs(p2[0]-p1[0])+abs(p2[1]-p1[1])
   def heuristic(self,pos):
-    return 2
+    return 2*self.dist(pos,self.target)
 
   def find_best_node(self,open_set,f_scores):
     best = maxsize
