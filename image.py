@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+from Classes.quadratic import Quadratic,QuadTree,Pt
 
 class ImageBuilder:
   COLORS = {"WHITE":(255,255,255),\
@@ -59,6 +60,22 @@ class ImageBuilder:
         pattern = self.build_pattern(col)
         im[j*ImageBuilder.PATTERN_SIZE:j*ImageBuilder.PATTERN_SIZE+ImageBuilder.PATTERN_SIZE,i*ImageBuilder.PATTERN_SIZE:i*ImageBuilder.PATTERN_SIZE+ImageBuilder.PATTERN_SIZE] = pattern
     im = cv.resize(im,(700,700),interpolation=cv.INTER_AREA)
+    return im
+
+  def build_image_qtree(self,obj,im=None):
+    if im is None:
+      im = np.zeros((Quadratic.WIN_H,Quadratic.WIN_W,3),dtype=np.uint8)
+    if obj is not None:
+      if type(obj) == QuadTree:
+        for p in obj.points:
+          self.build_image_qtree(p,im)
+        for q in obj.child.values():
+          self.build_image_qtree(q,im)
+      elif type(obj) == Pt:
+        color = ImageBuilder.COLORS["WHITE"]
+        if obj.highlited:
+          color = ImageBuilder.COLORS["RED"]
+        cv.circle(im,(int(obj.cx),int(obj.cy)),(obj.depth+1),color,-1)
     return im
 
   def build_pattern(self,value):

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>tab_quadratic</class>
+ <widget class="QWidget" name="tab_quadratic">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>972</width>
+    <width>1020</width>
     <height>548</height>
    </rect>
   </property>
@@ -130,42 +130,46 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_run">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Start</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btn_stop">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Stop</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QPushButton" name="btn_run">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Start</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_stop">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Stop</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
@@ -206,5 +210,42 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btn_run</sender>
+   <signal>clicked()</signal>
+   <receiver>tab_quadratic</receiver>
+   <slot>slt_start()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>520</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>509</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_stop</sender>
+   <signal>clicked()</signal>
+   <receiver>tab_quadratic</receiver>
+   <slot>slt_stop()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>274</x>
+     <y>520</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>509</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slt_start()</slot>
+  <slot>slt_stop()</slot>
+ </slots>
 </ui>

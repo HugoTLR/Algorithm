@@ -6,11 +6,13 @@ from PyQt5.QtWidgets import QMainWindow, QTabWidget
 from PyQt5.QtCore import Qt
 from Widgets.tab_sorter import Tab_Sorter
 from Widgets.tab_pathfinder import Tab_Pathfinder
+from Widgets.tab_quadratic import Tab_Quadratic
 
 class App(QMainWindow):
 
   TAB_TO_CLASS = {"Sorter":Tab_Sorter,\
-                    "Pathfinder":Tab_Pathfinder}
+                    "Pathfinder":Tab_Pathfinder,\
+                    "Quadratic":Tab_Quadratic}
 
   def __init__(self):
     super(App,self).__init__()
