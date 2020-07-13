@@ -1,8 +1,16 @@
 Simple QT5 App to visualize several works:
 
 -Sorting algorithm
--Pathfinding algorithm
--Vision algorithm
--SLAM ??
+![Example](./Images/example_sort.png)
 
-![Example](./readme.jpg)
+-Pathfinding algorithm
+![Example](./Images/example_pathfinder.png)
+
+-Quadratic algorithm
+![Example](./Images/example_quadratic.gif)
+
+-Inc, vision algorithms
+-Slam ?
+
+
+

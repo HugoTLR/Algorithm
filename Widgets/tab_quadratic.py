@@ -8,14 +8,15 @@ import threading
 from image import ImageBuilder
 import random
 from Classes.quadratic import *
-import time
-
+import time 
+import numpy as np
 class Tab_Quadratic(QWidget):
     def __init__(self):
       super(Tab_Quadratic,self).__init__()
       #Load UI From ui file
       loadUi(f'{UIS_FOLDER}/tab_quadratic.ui',self) #Load Ui From QT
 
+      self.CPT = 0
       self.im_builder = ImageBuilder()
       self.quadra = None
       self.c_thread = None
@@ -51,7 +52,7 @@ class Tab_Quadratic(QWidget):
       # print(dir(self.c_thread))
       nb_points = int(self.txt_points.toPlainText())
       pt_limit = int(self.txt_limit.toPlainText())
-      points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),5) for _ in range(nb_points)]
+      points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),3) for _ in range(nb_points)]
       self.quadra = Quadratic(nb_points,pt_limit)
       self.quadra.update_points(points)
       self.quadra.create_qtree()
@@ -83,10 +84,15 @@ class Tab_Quadratic(QWidget):
 
     def update_visual(self):
       img = self.build_image()
+
+      
       self.lbl_visu.setPixmap(img)
 
     def build_image(self):
       image = self.im_builder.build_image_qtree(self.quadra.qtree,quads=self.quadra.show_quad)
+      self.CPT += 1
+      if self.CPT%10 == 0:
+        cv.imwrite(f"./Images/gif_{self.CPT}.png",cv.cvtColor(image,cv.COLOR_RGB2BGR))
       q_pix = QPixmap.fromImage(QImage(image.data,image.shape[1],image.shape[0],QImage.Format_RGB888))
       return q_pix
 
