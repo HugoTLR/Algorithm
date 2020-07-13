@@ -82,7 +82,7 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item>
-            <widget class="QTextEdit" name="textEdit">
+            <widget class="QTextEdit" name="txt_limit">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -119,7 +119,7 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="cb_rect">
+            <widget class="QCheckBox" name="cb_quad">
              <property name="text">
               <string>Show quads (reduce slightly fps since it rebuild quadtree each loop)</string>
              </property>
@@ -203,6 +203,33 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="lbl_fps">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777214</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>text</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
@@ -243,9 +270,43 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cb_collision</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>tab_quadratic</receiver>
+   <slot>slt_collision_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>185</x>
+     <y>465</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>509</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_quad</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>tab_quadratic</receiver>
+   <slot>slt_quads_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>185</x>
+     <y>488</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>509</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slt_start()</slot>
   <slot>slt_stop()</slot>
+  <slot>slt_collision_changed()</slot>
+  <slot>slt_quads_changed()</slot>
  </slots>
 </ui>

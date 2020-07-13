@@ -8,7 +8,7 @@ import threading
 from image import ImageBuilder
 import random
 from Classes.quadratic import *
-
+import time
 
 class Tab_Quadratic(QWidget):
     def __init__(self):
@@ -17,26 +17,42 @@ class Tab_Quadratic(QWidget):
       loadUi(f'{UIS_FOLDER}/tab_quadratic.ui',self) #Load Ui From QT
 
       self.im_builder = ImageBuilder()
-      self.quadra = Quadratic()
+      self.quadra = None
       self.c_thread = None
+      self.lbl_fps.setText(f"Average FPS : ")
       self.show()
 
     def anim_listener(self,stop_event):
       state = True
       while state and not stop_event.isSet():
+        start = time.time()
+        #Check if we need to recompute the quad structure on each loop
+        #Since our particles are moving
+        if self.quadra.show_quad:
+          self.quadra.create_qtree()
+
         #Check Collision
-        self.quadra.qtree = self.quadra.check_collision(self.quadra.qtree)
+        if self.quadra.collision_loop:
+          self.quadra.normal_collision_check()
+        else:
+          self.quadra.qtree = self.quadra.check_collision(self.quadra.qtree)
         #Draw
         self.update_visual()
         #Update
         self.quadra.qtree = self.quadra.update_qtree(self.quadra.qtree)
+        end = time.time()
+
+        self.lbl_fps.setText(f"Average FPS : {1/(end-start):.5f}")
+        time.sleep(.01) # Avoid crashing if too few points
       sys.exit()
 
     def slt_start(self):
 
       # print(dir(self.c_thread))
-      points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),random.randint(2,2)) for _ in range(Quadratic.NB_POINTS)]
-
+      nb_points = int(self.txt_points.toPlainText())
+      pt_limit = int(self.txt_limit.toPlainText())
+      points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),2) for _ in range(nb_points)]
+      self.quadra = Quadratic(nb_points,pt_limit)
       self.quadra.update_points(points)
       self.quadra.create_qtree()
       self.stop_event = threading.Event()
@@ -50,15 +66,27 @@ class Tab_Quadratic(QWidget):
       self.c_thread.join()
 
 
-      self.update_visual()
-      
+      self.clear_visual()
+    
+    def slt_quads_changed(self,value):
+      self.quadra.show_quad = False
+      if value != 0:
+        self.quadra.show_quad = True
+
+    def slt_collision_changed(self,value):
+      self.quadra.collision_loop = False
+      if value != 0:
+        self.quadra.collision_loop = True
+
+    def clear_visual(self):
+      self.lbl_visu.clear()
 
     def update_visual(self):
       img = self.build_image()
       self.lbl_visu.setPixmap(img)
 
     def build_image(self):
-      image = self.im_builder.build_image_qtree(self.quadra.qtree)
+      image = self.im_builder.build_image_qtree(self.quadra.qtree,quads=self.quadra.show_quad)
       q_pix = QPixmap.fromImage(QImage(image.data,image.shape[1],image.shape[0],QImage.Format_RGB888))
       return q_pix
 

@@ -82,7 +82,8 @@ class Quad(Range):
 
 
 class QuadTree:
-  def __init__(self,roi):
+  def __init__(self,roi,pt_limit):
+    self.limit = pt_limit
     self.roi = Quad(roi[0],roi[1],roi[2],roi[3])
     self.child = {}
     self.points = []
@@ -99,10 +100,10 @@ class QuadTree:
 
 
   def divide(self):
-    self.child["NE"] = QuadTree( (self.roi.cx + Range.QUARTER(self.roi.w),self.roi.cy - Range.QUARTER(self.roi.h),Range.HALF(self.roi.w),Range.HALF(self.roi.h)  ) ) 
-    self.child["SE"] = QuadTree( (self.roi.cx + Range.QUARTER(self.roi.w),self.roi.cy + Range.QUARTER(self.roi.h),Range.HALF(self.roi.w),Range.HALF(self.roi.h)  ) ) 
-    self.child["SW"] = QuadTree( (self.roi.cx - Range.QUARTER(self.roi.w),self.roi.cy + Range.QUARTER(self.roi.h),Range.HALF(self.roi.w),Range.HALF(self.roi.h)  ) ) 
-    self.child["NW"] = QuadTree( (self.roi.cx - Range.QUARTER(self.roi.w),self.roi.cy - Range.QUARTER(self.roi.h),Range.HALF(self.roi.w),Range.HALF(self.roi.h)  ) ) 
+    self.child["NE"] = QuadTree( (self.roi.cx + Range.QUARTER(self.roi.w),self.roi.cy - Range.QUARTER(self.roi.h),Range.HALF(self.roi.w),Range.HALF(self.roi.h)  ) ,self.limit) 
+    self.child["SE"] = QuadTree( (self.roi.cx + Range.QUARTER(self.roi.w),self.roi.cy + Range.QUARTER(self.roi.h),Range.HALF(self.roi.w),Range.HALF(self.roi.h)  ) ,self.limit) 
+    self.child["SW"] = QuadTree( (self.roi.cx - Range.QUARTER(self.roi.w),self.roi.cy + Range.QUARTER(self.roi.h),Range.HALF(self.roi.w),Range.HALF(self.roi.h)  ) ,self.limit) 
+    self.child["NW"] = QuadTree( (self.roi.cx - Range.QUARTER(self.roi.w),self.roi.cy - Range.QUARTER(self.roi.h),Range.HALF(self.roi.w),Range.HALF(self.roi.h)  ) ,self.limit) 
     self.divided = True
 
   def push_to_child(self,p,d=1):
@@ -115,7 +116,7 @@ class QuadTree:
     if not self.roi.contains(p):
       return
     else:
-      if len(self.points) < Quadratic.POINT_LIMIT:
+      if len(self.points) < self.limit:
         p.depth = d
         self.points.append(p)
       else:
@@ -141,7 +142,7 @@ class QuadTree:
     return found
 
 def build_qtree(points):
-  qtree = QuadTree(( int(WIN_W/2),int(WIN_H/2),WIN_W,WIN_H))
+  qtree = QuadTree(( int(Quadratic.WIN_W/2),int(Quadratic.WIN_H/2),Quadratic.WIN_W,Quadratic.WIN_H),10)
   for p in points:
     qtree.insert(p)
   # print(f"QTree created in {time()-start:.03f} seconds") 
@@ -198,21 +199,22 @@ def normal_collision_check(points):
 
 class Quadratic:
   SEARCH_H = 50
-  WIN_W = 700
-  WIN_H = 700
-  NB_POINTS = 500
+  WIN_W = 600
+  WIN_H = 400
   RADIUS = 2
-  POINT_LIMIT = 20
 
-  def __init__(self):
-    pass
+  def __init__(self,nb_points = 500,pt_limit = 20):
+    self.nb_points = nb_points
+    self.pt_limit = pt_limit
+    self.show_quad = False
+    self.collision_loop = False
 
   def update_points(self,points):
     self.points = points
 
   def create_qtree(self):
     assert len(self.points) > 0, "At least one point needed in order to build the tree"
-    self.qtree = QuadTree(( int(Quadratic.WIN_W/2),int(Quadratic.WIN_H/2),Quadratic.WIN_W,Quadratic.WIN_H))
+    self.qtree = QuadTree(( int(Quadratic.WIN_W/2),int(Quadratic.WIN_H/2),Quadratic.WIN_W,Quadratic.WIN_H),self.pt_limit)
     for p in self.points:
       self.qtree.insert(p)
 
@@ -253,8 +255,8 @@ class Quadratic:
 #   import numpy as np
 #   SEARCH_W = 100
 
-#   points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),random.randint(2,2)) for _ in range(Quadratic.NB_POINTS)]
-#   quad = Quadratic()
+#   points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),random.randint(2,2)) for _ in range(10)]
+#   quad = Quadratic(10,100)
 #   quad.update_points(points)
 #   quad.create_qtree()
 
@@ -262,7 +264,7 @@ class Quadratic:
 
 
 
-#   text_position = (10,WIN_H-20)
+#   text_position = (10,Quadratic.WIN_H-20)
 
 #   q_tree_colision_method = True
 #   q_tree_rect = False
@@ -271,7 +273,7 @@ class Quadratic:
 
 
 #     start = time()
-#     im = np.zeros((WIN_H,WIN_W,3))
+#     im = np.zeros((Quadratic.WIN_H,Quadratic.WIN_W,3))
 #     if q_tree_colision_method:
 #       qtree = check_collision(qtree)
 #     else:

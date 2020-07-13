@@ -62,15 +62,20 @@ class ImageBuilder:
     im = cv.resize(im,(700,700),interpolation=cv.INTER_AREA)
     return im
 
-  def build_image_qtree(self,obj,im=None):
+  def build_image_qtree(self,obj,im=None,quads=False):
     if im is None:
       im = np.zeros((Quadratic.WIN_H,Quadratic.WIN_W,3),dtype=np.uint8)
     if obj is not None:
       if type(obj) == QuadTree:
         for p in obj.points:
           self.build_image_qtree(p,im)
+        if quads:
+          tl = obj.roi.cx-int(obj.roi.w/2),obj.roi.cy-int(obj.roi.h/2)
+          br = obj.roi.cx+int(obj.roi.w/2),obj.roi.cy+int(obj.roi.h/2)
+          cv.rectangle(im,tl,br,(0,255,0),1)
+
         for q in obj.child.values():
-          self.build_image_qtree(q,im)
+          self.build_image_qtree(q,im,quads)
       elif type(obj) == Pt:
         color = ImageBuilder.COLORS["WHITE"]
         if obj.highlited:
