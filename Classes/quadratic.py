@@ -124,10 +124,6 @@ class QuadTree:
           self.divide()
         self.push_to_child(p,d+1)
 
-
-
-  
-
   def query(self,ran,found=[]):
     if not self.roi.intersects(ran):
       return
@@ -140,61 +136,6 @@ class QuadTree:
       v.query(ran,found)
 
     return found
-
-def build_qtree(points):
-  qtree = QuadTree(( int(Quadratic.WIN_W/2),int(Quadratic.WIN_H/2),Quadratic.WIN_W,Quadratic.WIN_H),10)
-  for p in points:
-    qtree.insert(p)
-  # print(f"QTree created in {time()-start:.03f} seconds") 
-  return qtree
-
-def draw(im,obj,rect=False):
-  if type(obj) == QuadTree:
-    for p in obj.points:
-      draw(im,p)
-    if rect:
-      tl = obj.roi.cx-int(obj.roi.w/2),obj.roi.cy-int(obj.roi.h/2)
-      br = obj.roi.cx+int(obj.roi.w/2),obj.roi.cy+int(obj.roi.h/2)
-      cv.rectangle(im,tl,br,(0,255,0),1)
-
-    for q in obj.child.values():
-      draw(im,q,rect)
-  elif type(obj) == Pt:
-    color = (255,255,255)
-    if obj.highlited:
-      color = (0,0,255)
-    cv.circle(im,(int(obj.cx),int(obj.cy)),(obj.depth+1),color,-1)
-
-
-def update_qtree(qtree):
-  #start = time()
-  for points in qtree.points:
-    points.move()
-  if qtree.divided:
-    for v in qtree.child.values():
-      update_qtree(v)
-  return qtree
-def check_collision(obj):
-  for p in obj.points:
-    # ell = Pt(p.cx,p.cy,p.radius)
-    collided_pts = qtree.query(p,[])
-    if collided_pts:
-      if len(collided_pts) > 1: #We have more than our point
-        p.highlited = True
-        for c in collided_pts:
-          c.highlited = True
-  for q in obj.child.values():
-    check_collision(q)
-  return obj
-
-def normal_collision_check(points):
-  for j,p in enumerate(points):
-    for i,pt in enumerate(points):
-      if p.__eq__(pt):
-        continue
-      if p.contains(pt):
-        points[j].highlited = True
-        points[i].highlited = True
 
 
 class Quadratic:
@@ -248,51 +189,3 @@ class Quadratic:
         if p.contains(pt):
           self.points[j].highlited = True
           self.points[i].highlited = True
-
-
-
-# if __name__ == "__main__":
-#   import numpy as np
-#   SEARCH_W = 100
-
-#   points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),random.randint(2,2)) for _ in range(10)]
-#   quad = Quadratic(10,100)
-#   quad.update_points(points)
-#   quad.create_qtree()
-
-  
-
-
-
-#   text_position = (10,Quadratic.WIN_H-20)
-
-#   q_tree_colision_method = True
-#   q_tree_rect = False
-#   qtree = build_qtree(points)
-#   while True:
-
-
-#     start = time()
-#     im = np.zeros((Quadratic.WIN_H,Quadratic.WIN_W,3))
-#     if q_tree_colision_method:
-#       qtree = check_collision(qtree)
-#     else:
-#       normal_collision_check(points)
-#     draw(im,qtree,rect=q_tree_rect)
-#     qtree = update_qtree(qtree)
-#     end = time()
-
-
-#     cv.putText(im,f"Average FPS: {1/(end-start):.5f}",\
-#                 text_position,cv.FONT_HERSHEY_SIMPLEX,.5,(0, 255, 255),2)
-#     cv.imshow("im",im)
-#     key = cv.waitKey(1)
-#     if key == ord('q') & 0xFF:
-#       break
-#     elif key == ord('s') & 0xFF:
-#       q_tree_colision_method = not q_tree_colision_method
-#       print(q_tree_colision_method)
-#     elif key == ord('r') & 0xFF:
-#       q_tree_rect = not q_tree_rect
-
-#   cv.destroyAllWindows()

@@ -72,7 +72,7 @@ class ImageBuilder:
         if quads:
           tl = obj.roi.cx-int(obj.roi.w/2),obj.roi.cy-int(obj.roi.h/2)
           br = obj.roi.cx+int(obj.roi.w/2),obj.roi.cy+int(obj.roi.h/2)
-          cv.rectangle(im,tl,br,(0,255,0),1)
+          cv.rectangle(im,tl,br,ImageBuilder.COLORS["GREEN"],1)
 
         for q in obj.child.values():
           self.build_image_qtree(q,im,quads)
@@ -80,7 +80,7 @@ class ImageBuilder:
         color = ImageBuilder.COLORS["WHITE"]
         if obj.highlited:
           color = ImageBuilder.COLORS["RED"]
-        cv.circle(im,(int(obj.cx),int(obj.cy)),(obj.depth+1),color,-1)
+        cv.circle(im,(int(obj.cx),int(obj.cy)),(obj.radius),color,-1)
     return im
 
   def build_pattern(self,value):

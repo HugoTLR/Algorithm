@@ -51,7 +51,7 @@ class Tab_Quadratic(QWidget):
       # print(dir(self.c_thread))
       nb_points = int(self.txt_points.toPlainText())
       pt_limit = int(self.txt_limit.toPlainText())
-      points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),2) for _ in range(nb_points)]
+      points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),5) for _ in range(nb_points)]
       self.quadra = Quadratic(nb_points,pt_limit)
       self.quadra.update_points(points)
       self.quadra.create_qtree()
