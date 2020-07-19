@@ -41,16 +41,19 @@ class GOL_1D:
       state[i] = self.rules[code]
     return state
   def build_im(self):
-
     im = np.zeros(((self.n_steps+1)*PATTERN_SIZE,w*PATTERN_SIZE,3),dtype=np.uint8)
+
+    pattern = self.patterns[0]
     for j in range(self.n_steps+1):
       for i in range(self.w):
-        pattern = self.patterns[0]
-        if j < len(self.states):
-          pattern = self.patterns[self.states[j][i]]
         im[j*PATTERN_SIZE:j*PATTERN_SIZE+PATTERN_SIZE,i*PATTERN_SIZE:i*PATTERN_SIZE+PATTERN_SIZE] = pattern
 
-    im = cv.resize(im,(0,0),fx=.5,fy=.5,interpolation=cv.INTER_AREA)
+    #im = cv.resize(im,(0,0),fx=.25,fy=.25,interpolation=cv.INTER_AREA)
+    return im
+  def update_im(self,im,k):
+    for i in range(self.w):
+      pattern = self.patterns[self.states[k][i]]
+      im[k*PATTERN_SIZE:k*PATTERN_SIZE+PATTERN_SIZE,i*PATTERN_SIZE:i*PATTERN_SIZE+PATTERN_SIZE] = pattern
     return im
   def build_initial_state(self):
     if self.rand_first_state:
@@ -61,9 +64,11 @@ class GOL_1D:
     return initial
 
   def run(self,save=False):
-    for _ in range(self.n_steps+1):
+    im = self.build_im()
+    for k in range(self.n_steps+1):
       self.states.append(self.step())
-      cv.imshow("im",self.build_im())
+      im = self.update_im(im,k)
+      cv.imshow("im",cv.resize(im,(0,0),fx=.1,fy=.1,interpolation=cv.INTER_AREA))
       cv.waitKey(1)
     if save:
       cv.imwrite(f"./Images/Wolfram_ECA_Rules/rule_{self.rule_id:03d}.png",self.build_im())
@@ -110,12 +115,12 @@ if __name__ == "__main__":
               "PINK":(255,0,200)}
 
   PATTERN_SIZE = 9
-  w = 101
+  w = 801
   assert w%2 != 0, "W must be odd"
 
   
-  steps = 120
-  gol = GOL_1D(w,steps,90,rand=True)
+  steps = 400
+  gol = GOL_1D(w,steps,30,rand=True)
   gol.run()
 """"
   for j in range(256):
