@@ -10,7 +10,7 @@ Simple QT5 App to visualize several works:
 ![Example](./Images/example_quadratic.gif)
 
 -Eca
-![Example](./Images/Wolfram_ECA_Rules/rule_30.png)
+![Example](./Images/Wolfram_ECA_Rules/rule_030.png)
 
 
 
