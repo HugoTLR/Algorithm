@@ -1,0 +1,1 @@
+GET_BIN = lambda x, n: format(x, 'b').zfill(n)

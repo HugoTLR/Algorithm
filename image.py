@@ -83,6 +83,12 @@ class ImageBuilder:
         cv.circle(im,(int(obj.cx),int(obj.cy)),(obj.radius),color,-1)
     return im
 
+  def build_image_eca(self,im,states,step):
+    state = states[step]
+    for i,val in enumerate(state):
+      im[step][i] = (val*255,val*255,val*255)
+    return im
+
   def build_pattern(self,value):
     pattern = np.zeros((ImageBuilder.PATTERN_SIZE,ImageBuilder.PATTERN_SIZE,3),dtype=np.uint8)
     color = self.get_color(value)

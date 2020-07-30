@@ -7,12 +7,14 @@ from PyQt5.QtCore import Qt
 from Widgets.tab_sorter import Tab_Sorter
 from Widgets.tab_pathfinder import Tab_Pathfinder
 from Widgets.tab_quadratic import Tab_Quadratic
+from Widgets.tab_eca import Tab_ECA
 
 class App(QMainWindow):
 
   TAB_TO_CLASS = {"Sorter":Tab_Sorter,\
                     "Pathfinder":Tab_Pathfinder,\
-                    "Quadratic":Tab_Quadratic}
+                    "Quadratic":Tab_Quadratic,\
+                    "Eca":Tab_ECA}
 
   def __init__(self):
     super(App,self).__init__()
