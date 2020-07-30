@@ -32,6 +32,8 @@ class Tab_Quadratic(QWidget):
         if self.quadra.show_quad:
           self.quadra.create_qtree()
 
+
+
         #Check Collision
         if self.quadra.collision_loop:
           self.quadra.normal_collision_check()

@@ -9,8 +9,8 @@ Simple QT5 App to visualize several works:
 -Quadratic algorithm
 ![Example](./Images/example_quadratic.gif)
 
--Inc, vision algorithms
--Slam ?
+-Eca
+![Example](./Images/Wolfram_ECA_Rules/rule_30.png)
 
 
 
