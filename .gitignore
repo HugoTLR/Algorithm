@@ -3,3 +3,5 @@ Sorting/__pycache__
 AStar/
 Projects/
 QuadTree/
+*.pyc
+pynoise/

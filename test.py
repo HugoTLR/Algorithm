@@ -27,7 +27,6 @@ class GOL_1D:
         code = ''.join([str(curr[(i-1)%self.w]),str(curr[i]),str(curr[(i+1)%self.w])])
         self.states[k][i] = self.rules[code]
 
-    print("Step done")
   def build_im(self):
     im = np.zeros(((self.n_steps+1)*PATTERN_SIZE,w*PATTERN_SIZE,3),dtype=np.uint8)
 
@@ -90,14 +89,14 @@ class GOL_1D:
 
 
 if __name__ == "__main__":
-  w = 901
-  steps = 450
+  w = 1801
+  steps = 900
   # w = 401
   # steps = 200
   assert w%2 != 0, "W must be odd"
 
   
-  gol = GOL_1D(w,steps,30,rand=False)
+  gol = GOL_1D(w,steps,90,rand=False)
   gol.run(save=False)
   
   # for j in range(256):

@@ -16,7 +16,7 @@ def hex_to_bgr(hex_str):
 
 def build_palette(size):
   p = {}
-  palette = inferno(size)
+  palette = veridis(size)
   for j in range(size):
 
     p[j] = hex_to_bgr(palette[j])
