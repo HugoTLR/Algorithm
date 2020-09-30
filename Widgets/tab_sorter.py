@@ -27,7 +27,7 @@ class Tab_Sorter(QWidget):
         # Avaiable unsorted list
       self.populate()
 
-      self.show()
+      # self.show()
 
     def get_implemented_algorithm(self):
       return [cls.__name__ for cls in Sorter.__subclasses__()]

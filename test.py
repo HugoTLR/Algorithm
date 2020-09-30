@@ -1,115 +1,60 @@
+import sys
+from Widgets.app import App
+from Widgets.ImageWidget import ImageWidget
+from PyQt5.QtCore import QTimer, QPoint, pyqtSignal
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel
+from PyQt5.QtWidgets import QWidget, QAction, QVBoxLayout, QHBoxLayout
+from PyQt5.QtGui import QFont, QPainter, QImage, QTextCursor
+
 import cv2 as cv
-import numpy as np
-import random
-GET_BIN = lambda x, n: format(x, 'b').zfill(n)
 
-def build_pattern(col):
-  pattern = np.ones((PATTERN_SIZE,PATTERN_SIZE,3),dtype=np.uint8)*255
+# Main window
+class MyWindow(QMainWindow):
+    text_update = pyqtSignal(str)
 
+    # Create main window
+    def __init__(self, parent=None):
+        QMainWindow.__init__(self, parent)
 
-class GOL_1D:
-  def __init__(self,w,n_steps,rule_id,rand=False):
-    self.w = w
-    self.steps = 0
-    self.n_steps = n_steps
-    self.states = np.array([[0]*self.w]*(self.n_steps+1))
-    self.rule_id = rule_id
-    self.rand_first_state = rand
-    self.rules = self.get_rules(rule_id)
+        self.central = QWidget(self)
+        self.textbox = QTextEdit(self.central)
+        self.textbox.setMinimumSize(300, 100)
 
+        self.vlayout = QVBoxLayout()        # Window layout
+        self.displays = QHBoxLayout()
+        self.disp = ImageWidget(self)    
+        self.displays.addWidget(self.disp)
+        self.vlayout.addLayout(self.displays)
+        self.label = QLabel(self)
+        self.vlayout.addWidget(self.label)
+        self.vlayout.addWidget(self.textbox)
+        self.central.setLayout(self.vlayout)
+        self.setCentralWidget(self.central)
 
-  def step(self,k):
-    if k == 0:
-      self.build_initial_state()
-    else:
-      curr = self.states[k-1]
-      for i in range(self.w):
-        code = ''.join([str(curr[(i-1)%self.w]),str(curr[i]),str(curr[(i+1)%self.w])])
-        self.states[k][i] = self.rules[code]
+        self.mainMenu = self.menuBar()      # Menu bar
+        exitAction = QAction('&Exit', self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.triggered.connect(self.close)
+        self.fileMenu = self.mainMenu.addMenu('&File')
+        self.fileMenu.addAction(exitAction)
 
-  def build_im(self):
-    im = np.zeros(((self.n_steps+1)*PATTERN_SIZE,w*PATTERN_SIZE,3),dtype=np.uint8)
+        im = cv.imread('C:\\Users\\Shir0w\\Desktop\\Figure_1.png')
 
-    pattern = self.patterns[0]
-    for j in range(self.n_steps+1):
-      for i in range(self.w):
-        im[j*PATTERN_SIZE:j*PATTERN_SIZE+PATTERN_SIZE,i*PATTERN_SIZE:i*PATTERN_SIZE+PATTERN_SIZE] = pattern
-
-    #im = cv.resize(im,(0,0),fx=.25,fy=.25,interpolation=cv.INTER_AREA)
-    return im
-
-
-  def update_im(self,im,k):
-    for i in range(self.w):
-      pattern = self.patterns[self.states[k][i]]
-      im[k*PATTERN_SIZE:k*PATTERN_SIZE+PATTERN_SIZE,i*PATTERN_SIZE:i*PATTERN_SIZE+PATTERN_SIZE] = pattern
-    return im
-
-  def build_initial_state(self):
-    if self.rand_first_state:
-      self.states[0] = [random.choice([0,1]) for _ in range(self.w)]
-    else:
-      self.states[0][self.w//2] = 1
-
-  def run(self,save=False):
-    # im = self.build_im()
-
-    for k in range(len(self.states)):
-      self.step(k)
-
-      im = np.array(self.states,dtype=np.uint8)*255
-
-      cv.imshow("im",cv.resize(im,(0,0),fx=1,fy=1,interpolation=cv.INTER_AREA))
-      cv.waitKey(1)
-    if save:
-      cv.imwrite(f"./Images/Wolfram_ECA_Rules/rule_{self.rule_id:03d}.png",cv.resize(im,(0,0),fx=2,fy=2,interpolation=cv.INTER_AREA))
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+        scale = 2
+        disp_size = im.shape[1]//scale, im.shape[0]//scale
+        disp_bpl = disp_size[0] * 3
+        if scale > 1:
+            im = cv.resize(im, disp_size, 
+                             interpolation=cv.INTER_CUBIC)
+        qim = QImage(im.data, disp_size[0], disp_size[1],QImage.Format_RGB888)
+        self.disp.setImage(qim)
 
 
+if __name__ == '__main__':
+  app = QApplication(sys.argv)
+  win = MyWindow()
+  win.show()
+  # win.start()
+  sys.exit(app.exec_())
 
-  def get_rules(self,rule_id):
-    assert rule_id >= 0 and rule_id <= 255, "There is only 256 rules [0-255]"
-    rule_to_bin = GET_BIN(rule_id,8)
-    rules = { "111":0,\
-              "110":0,\
-              "101":0,\
-              "100":0,\
-              "011":0,\
-              "010":0,\
-              "001":0,\
-              "000":0 }
-    assert len(rules) == len(rule_to_bin), "binary not of size 8"
-    cpt = 0
-    for k,v in rules.items():
-      rules[k] = int(rule_to_bin[cpt])
-      cpt += 1
-    return rules
-
-
-
-if __name__ == "__main__":
-  w = 1801
-  steps = 900
-  # w = 401
-  # steps = 200
-  assert w%2 != 0, "W must be odd"
-
-  
-  gol = GOL_1D(w,steps,90,rand=False)
-  gol.run(save=False)
-  
-  # for j in range(256):
-
-  #   gol = GOL_1D(w,steps,j)
-  #   gol.run(save=False)
-  
-    
-
-
- 
-
-
-    
-
-
+#EOF

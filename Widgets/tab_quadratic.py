@@ -21,7 +21,7 @@ class Tab_Quadratic(QWidget):
       self.quadra = None
       self.c_thread = None
       self.lbl_fps.setText(f"Average FPS : ")
-      self.show()
+      # self.show()
 
     def anim_listener(self,stop_event):
       state = True

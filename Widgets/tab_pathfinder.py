@@ -9,12 +9,19 @@ from Classes.sorter import *
 from Classes.pathfinder import *
 from image import ImageBuilder
 
+from Widgets.ImageWidget import ImageWidget 
 
+import cv2 as cv
 class Tab_Pathfinder(QWidget):
     def __init__(self):
       super(Tab_Pathfinder,self).__init__()
       #Load UI From ui file
       loadUi(f'{UIS_FOLDER}/tab_pathfinder.ui',self) #Load Ui From QT
+
+
+      self.image_widget = ImageWidget()
+      self.verticalLayout_3.addWidget(self.image_widget)
+
 
       self.im_builder = ImageBuilder()
       self.pathfinder = None
@@ -25,7 +32,15 @@ class Tab_Pathfinder(QWidget):
 
 
 
-      self.show()
+    def display_image(self,image):
+      scale = 1
+      disp_size = image.shape[1]//scale, image.shape[0]//scale
+      disp_bpl = disp_size[0] * 3
+      if scale > 1:
+          image = cv.resize(image, disp_size, 
+                           interpolation=cv.INTER_CUBIC)
+      qim = QImage(image.data, disp_size[0], disp_size[1],QImage.Format_RGB888)
+      self.image_widget.setImage(qim)
 
     def get_implemented_algorithm(self):
       return [cls.__name__ for cls in Pathfinder.__subclasses__()]
@@ -78,8 +93,11 @@ class Tab_Pathfinder(QWidget):
         text = "Final Step"
       else:
         text = f"Step {self.current_step} / {self.total_steps}" 
-      img = self.build_image()
-      self.lbl_visu.setPixmap(img)
+      # img = self.build_image()
+      # self.lbl_visu.setPixmap(img)
+
+      img = self.im_builder.build_image_arr(self.pathfinder.steps[self.current_step])
+      self.display_image(img)
       self.lbl_step.setText(text)
 
     def build_image(self):

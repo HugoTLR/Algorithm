@@ -22,7 +22,7 @@ class Tab_ECA(QWidget):
 
 
 
-    self.show()
+    # self.show()
 
   def anim_listener(self,stop_event):
     for k in range(self.eca.n_steps):
