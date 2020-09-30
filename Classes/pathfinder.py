@@ -3,14 +3,12 @@ from copy import deepcopy as dc
 from collections import defaultdict
 from heapq import heappush,heappop
 from sys import maxsize
+
+from cste import SYMBOLS, DIR
 class Pathfinder:
-  SYMBOLS = {"START":'S',\
-              "TARGET":'T',\
-              "WALL":'#',\
-              "EMPTY":'.'}
 
 
-  DIR = [(-1,0),(0,1),(1,0),(0,-1)]
+
   def __init__(self):
     pass
 
@@ -28,21 +26,21 @@ class Pathfinder:
 
   def find_valid_neighbours(self,pos):
     neighbours = []
-    for d in Pathfinder.DIR:
+    for d in DIR:
         n_pos = ( (pos[0]+d[0]), (pos[1]+d[1]))
-        if n_pos[1] >= 0 and n_pos[1] < self.h and n_pos[0] >= 0 and n_pos[0] < self.w and self.grid[n_pos[1]][n_pos[0]] != Pathfinder.SYMBOLS['WALL']:
+        if n_pos[1] >= 0 and n_pos[1] < self.h and n_pos[0] >= 0 and n_pos[0] < self.w and self.grid[n_pos[1]][n_pos[0]] != SYMBOLS['WALL']:
             neighbours.append(n_pos)
     return neighbours
 
   def find_start_pos(self):
     for k in self.graph.keys():
-      if self.graph[k]["symbol"] == Pathfinder.SYMBOLS['START']:
+      if self.graph[k]["symbol"] == SYMBOLS['START']:
         self.start = k
         break
 
   def find_target_pos(self):
     for k in self.graph.keys():
-        if self.graph[k]["symbol"] == Pathfinder.SYMBOLS['TARGET']:
+        if self.graph[k]["symbol"] == SYMBOLS['TARGET']:
           self.target = k
           break
 
@@ -62,21 +60,21 @@ class Pathfinder:
   def build_status_map(self,VISITED,c=None,EXPLORING=[],path=[],open_set=[]):
     base_grid = dc(self.grid)
     for V in VISITED:
-      base_grid[V[1]][V[0]] = 'V'
+      base_grid[V[1]][V[0]] = SYMBOLS['VISITED']
     for E in EXPLORING:
-      base_grid[E[1]][E[0]] = 'E'
+      base_grid[E[1]][E[0]] = SYMBOLS['EXPLORE']
     for O in open_set:
-      base_grid[O[1]][O[0]] = 'O'
+      base_grid[O[1]][O[0]] = SYMBOLS['OPEN']
     if c is not None:
-      base_grid[c[1]][c[0]] = 'C'
+      base_grid[c[1]][c[0]] = SYMBOLS['CURRENT']
 
     for P in path:
       if P != self.start and P != self.target:
-        base_grid[P[1]][P[0]] = 'P'
+        base_grid[P[1]][P[0]] = SYMBOLS['PATH']
 
 
-    base_grid[self.start[1]][self.start[0]] = 'S'
-    base_grid[self.target[1]][self.target[0]] = 'T'
+    base_grid[self.start[1]][self.start[0]] = SYMBOLS['START']
+    base_grid[self.target[1]][self.target[0]] = SYMBOLS['TARGET']
     return base_grid
 
   def reconstruct_closest_path(self,t=None):

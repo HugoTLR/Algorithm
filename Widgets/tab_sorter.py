@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import QWidget
 from Classes.sorter import *
 from image import ImageBuilder
 
+from Widgets.ImageWidget import ImageWidget 
+from ImageBuilder import *
 
 class Tab_Sorter(QWidget):
     """
@@ -21,6 +23,9 @@ class Tab_Sorter(QWidget):
       # Instantiate Image wrapper and Algo Sorter
       self.im_builder = ImageBuilder()
       self.sorter = None
+
+      self.image_widget = ImageWidget()
+      self.verticalLayout_2.insertWidget(0,self.image_widget)
 
       # Populate ListView with:
         # Avaiable sorting algorithm
@@ -108,8 +113,8 @@ class Tab_Sorter(QWidget):
         text = "Final Step"
       else:
         text = f"Step {self.current_step} / {self.total_steps}" 
-      img = self.build_image()
-      self.lbl_visu.setPixmap(img)
+      img = ImageBuilder.build(b_type='sorter', data = self.sorter.steps[self.current_step], status = self.sorter.steps_status[self.current_step])
+      self.display_image(img)
       self.lbl_step.setText(text)
 
 
@@ -117,3 +122,13 @@ class Tab_Sorter(QWidget):
       image = self.im_builder.build_image_list(self.sorter.steps[self.current_step],self.sorter.steps_status[self.current_step])
       q_pix = QPixmap.fromImage(QImage(image.data,image.shape[1],image.shape[0],QImage.Format_RGB888))
       return q_pix
+
+    def display_image(self,image):
+      scale = 1
+      disp_size = image.shape[1]//scale, image.shape[0]//scale
+      disp_bpl = disp_size[0] * 3
+      if scale > 1:
+          image = cv.resize(image, disp_size, 
+                           interpolation=cv.INTER_CUBIC)
+      qim = QImage(image.data, disp_size[0], disp_size[1],QImage.Format_RGB888)
+      self.image_widget.setImage(qim)

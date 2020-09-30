@@ -7,7 +7,8 @@ from PyQt5.QtWidgets import QWidget
 
 from Classes.sorter import *
 from Classes.pathfinder import *
-from image import ImageBuilder
+# from image import ImageBuilder
+from ImageBuilder import *
 
 from Widgets.ImageWidget import ImageWidget 
 
@@ -20,10 +21,10 @@ class Tab_Pathfinder(QWidget):
 
 
       self.image_widget = ImageWidget()
-      self.verticalLayout_3.addWidget(self.image_widget)
+      self.verticalLayout_2.insertWidget(0,self.image_widget)
 
 
-      self.im_builder = ImageBuilder()
+      # self.im_builder = ImageBuilder()
       self.pathfinder = None
 
       self.populate_algo_list()
@@ -93,10 +94,8 @@ class Tab_Pathfinder(QWidget):
         text = "Final Step"
       else:
         text = f"Step {self.current_step} / {self.total_steps}" 
-      # img = self.build_image()
-      # self.lbl_visu.setPixmap(img)
 
-      img = self.im_builder.build_image_arr(self.pathfinder.steps[self.current_step])
+      img = ImageBuilder.build(b_type='pathfinder',data=self.pathfinder.steps[self.current_step] )
       self.display_image(img)
       self.lbl_step.setText(text)
 
