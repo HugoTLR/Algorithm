@@ -1,7 +1,7 @@
-import cv2 as cv
-import numpy as np
-import math
 import sys
+from cv2 import line, circle, imshow, waitKey, destroyAllWindows, setMouseCallback, EVENT_MOUSEMOVE
+from numpy import full, uint8
+from math import cos, sin, radians, sqrt
 from random import randint
 
 CST = 10
@@ -11,7 +11,7 @@ class Ray:
     self.direction = self.dir_from_angle(angle)
 
   def dir_from_angle(self,angle):
-    return (math.cos(angle),math.sin(angle))
+    return (cos(angle),sin(angle))
 
   def __str__(self):
     return f"Ray {(self.parent.x,self.parent.y)}: {self.direction}"
@@ -43,7 +43,7 @@ class Ray:
       return None
 
   def draw(self,img,pt):
-    cv.line(img,(self.parent.x,self.parent.y),pt,255,1)
+    line(img,(self.parent.x,self.parent.y),pt,255,1)
     return img
 
 class Boundary:
@@ -52,7 +52,7 @@ class Boundary:
     self.b = b
 
   def draw(self,img):
-    cv.line(img,self.a,self.b,0,3)
+    line(img,self.a,self.b,0,3)
     return img
 
 class Particle:
@@ -68,11 +68,11 @@ class Particle:
 
   def build_rays(self,nb):
     deg_per_rays = int(360/nb)
-    rays = [Ray(self,math.radians(i)) for i in range(0,360,deg_per_rays)]
+    rays = [Ray(self,radians(i)) for i in range(0,360,deg_per_rays)]
     return rays
 
   def dist(self,p2):
-    return math.sqrt( (p2[0]-self.x)**2 + (p2[1] - self.y)**2 )
+    return sqrt( (p2[0]-self.x)**2 + (p2[1] - self.y)**2 )
 
   def draw(self,img,boundaries):
     for ray in self.rays:
@@ -89,11 +89,11 @@ class Particle:
       
       if min_pt is not None:
         img = ray.draw(img,min_pt)
-    cv.circle(img,(self.x,self.y),5,127,-1)
+    circle(img,(self.x,self.y),5,127,-1)
     return img
 
 def init(boundaries):
-  img = np.full((HEIGHT,WIDTH),50,dtype=np.uint8)
+  img = full((HEIGHT,WIDTH),50,dtype=uint8)
   for bound in boundaries:
     img = bound.draw(img)
   return img
@@ -117,22 +117,21 @@ def generate_borders():
 #define the events for the 
 # mouse_move. 
 
-def generate_boundaries(nb):
-  boundaries = []
+def generate_boundaries(nb,boundaries = []):
   for _ in range(nb):
-    boundaries.append( Boundary( ( randint(0,WIDTH-1), randint(0,HEIGHT-1) ), ( randint(0,WIDTH-1), randint(0,HEIGHT-1) ) ) )
+    boundaries.append( Boundary( ( randint(0,WIDTH), randint(0,HEIGHT) ), ( randint(0,WIDTH), randint(0,HEIGHT) ) ) )
   return boundaries
 
 def mouse_move(event, x, y, flags, param): 
   # to check if left mouse  
   # button was clicked 
-  if event == cv.EVENT_MOUSEMOVE: 
+  if event == EVENT_MOUSEMOVE: 
     img = init(param[0])
     param[1].update(x,y)
 
   
     img = draw(img,origin=param[1],boundaries=param[0])
-    cv.imshow('image', img) 
+    imshow('image', img) 
     # print("\n\n\n")
 
 
@@ -141,22 +140,22 @@ if __name__ == "__main__":
   HEIGHT = 400
 
 
-  # boundaries = generate_borders()
+  boundaries = generate_borders()
   # boundaries.extend([Boundary((100,100),(100,200)),Boundary((900,100),(900,400)),Boundary((300,150),(100,280)),Boundary((800,40),(500,80))])
  
-  boundaries = generate_boundaries(6)
+  boundaries = generate_boundaries(6,boundaries)
   img = init(boundaries)
 
-  particle = Particle(int(WIDTH/2),int(HEIGHT/2),50)
+  particle = Particle(int(WIDTH/2),int(HEIGHT/2),100)
 
   img = draw(img,origin=particle,boundaries=boundaries)
 
-  cv.imshow('image', img) 
+  imshow('image', img) 
 
 
   
 
   
-  cv.setMouseCallback('image', mouse_move,[boundaries,particle]) 
-  cv.waitKey() 
-  cv.destroyAllWindows()
+  setMouseCallback('image', mouse_move,[boundaries,particle]) 
+  waitKey() 
+  destroyAllWindows()
