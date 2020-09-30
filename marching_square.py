@@ -4,6 +4,7 @@ import numpy as np
 from random import choice,random, uniform
 
 from math import ceil
+from opensimplex import OpenSimplex
 
 def draw_corners(img,grid):
   for j, row in enumerate(grid):
@@ -20,7 +21,6 @@ def draw_lines(img,grid):
       d = grid[j + 1][i]
 
       st = state(round(a),round(b),round(c),round(d))
-      # img = cv.putText(img, str(st), (int(i*RESO + RESO/3),int(j*RESO + RESO/2)), cv.FONT_HERSHEY_SIMPLEX , 0.3, 0, 1, cv.LINE_AA) 
       img = draw_line(st,img,j,i)
   return img
 
@@ -53,35 +53,34 @@ def rescale(val,o_start,o_end,start,end):
   return (val-o_start)*(end-start) / (o_end-o_start)+start
 
 def scale(grid):
-  return [[rescale(grid[j][i],-1,1,0,1) for i in range(len(grid[0]))] for j in range(len(grid))]
+  return np.array([[rescale(grid[j][i],-1,1,0,1) for i in range(len(grid[0]))] for j in range(len(grid))])
 
 
 if __name__ == "__main__":
   WIDTH = 600
   HEIGHT = 400
+  RESO = 10
 
-  RESO = 15
+  N_WIDTH = WIDTH // RESO + RESO
+  N_HEIGHT = HEIGHT // RESO + RESO
 
-  from pynoise import perlin
-  perlin_gen = perlin.Perlin(frequency=10)
+  FEATURE_SIZE = 10
 
-  cpt = 0.0
+  ops = OpenSimplex()
+  z_inc = 0
   while True:
     img = np.full((HEIGHT,WIDTH),127,dtype=np.uint8)
-    grid = np.array([[(perlin_gen.value(j/HEIGHT,i/WIDTH,cpt)) for i in range(0,WIDTH+RESO,RESO)] for j in range(0,HEIGHT+RESO,RESO)])
+    grid = np.array([[(ops.noise3d(i/FEATURE_SIZE,j/FEATURE_SIZE,z_inc)) for i in range(N_WIDTH)] for j in range(N_HEIGHT)])
     grid = scale(grid)
 
     img = draw_corners(img,grid)
     img = draw_lines(img,grid)
 
-
-    cv.imshow('im',img)
+    cv.imshow("im",img)
+    # cv.imshow("g",grid)
     key = cv.waitKey(1)
     if key == ord('q') & 0xFF:
       break
-    cpt += .01
-    if cpt >= 10:
-      cpt = 0
-  cv.destroyAllWindows()
 
+    z_inc += 0.1
 
