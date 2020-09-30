@@ -1,15 +1,15 @@
-import sys
-from envvar import UIS_FOLDER,DATA_FOLDER
-from glob import glob
+#3rd party
 from PyQt5.uic import loadUi
-from PyQt5.QtGui import QImage,QPixmap
 from PyQt5.QtWidgets import QWidget
-
+#System
+from glob import glob
+import sys
+#Local
 from Classes.sorter import *
-from image import ImageBuilder
-
-from Widgets.ImageWidget import ImageWidget 
+from envvar import UIS_FOLDER,DATA_FOLDER
 from ImageBuilder import *
+from utils import display_image
+from Widgets.ImageWidget import ImageWidget 
 
 class Tab_Sorter(QWidget):
     """
@@ -32,7 +32,6 @@ class Tab_Sorter(QWidget):
         # Avaiable unsorted list
       self.populate()
 
-      # self.show()
 
     def get_implemented_algorithm(self):
       return [cls.__name__ for cls in Sorter.__subclasses__()]
@@ -114,21 +113,5 @@ class Tab_Sorter(QWidget):
       else:
         text = f"Step {self.current_step} / {self.total_steps}" 
       img = ImageBuilder.build(b_type='sorter', data = self.sorter.steps[self.current_step], status = self.sorter.steps_status[self.current_step])
-      self.display_image(img)
+      self.image_widget.setImage(display_image(img))
       self.lbl_step.setText(text)
-
-
-    def build_image(self):
-      image = self.im_builder.build_image_list(self.sorter.steps[self.current_step],self.sorter.steps_status[self.current_step])
-      q_pix = QPixmap.fromImage(QImage(image.data,image.shape[1],image.shape[0],QImage.Format_RGB888))
-      return q_pix
-
-    def display_image(self,image):
-      scale = 1
-      disp_size = image.shape[1]//scale, image.shape[0]//scale
-      disp_bpl = disp_size[0] * 3
-      if scale > 1:
-          image = cv.resize(image, disp_size, 
-                           interpolation=cv.INTER_CUBIC)
-      qim = QImage(image.data, disp_size[0], disp_size[1],QImage.Format_RGB888)
-      self.image_widget.setImage(qim)

@@ -5,7 +5,7 @@ from cv2 import rectangle
 WIDTH = 960
 HEIGHT = 720
 PATTERN_SIZE = 13
-
+IMAGE_SCALE = 1
 #GLOBAL COLORS
 STATUS = {
   0: "GRAY",

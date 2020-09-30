@@ -1,15 +1,14 @@
-import sys
-from envvar import UIS_FOLDER,DATA_FOLDER
-from glob import glob
+#3rd party
 from PyQt5.uic import loadUi
-from PyQt5.QtGui import QImage,QPixmap
 from PyQt5.QtWidgets import QWidget
-
-from Classes.sorter import *
+#System
+from glob import glob
+import sys
+#Local
 from Classes.pathfinder import *
-# from image import ImageBuilder
+from envvar import UIS_FOLDER,DATA_FOLDER
 from ImageBuilder import *
-
+from utils import display_image
 from Widgets.ImageWidget import ImageWidget 
 
 import cv2 as cv
@@ -20,28 +19,19 @@ class Tab_Pathfinder(QWidget):
       loadUi(f'{UIS_FOLDER}/tab_pathfinder.ui',self) #Load Ui From QT
 
 
+      #Insert image widget
       self.image_widget = ImageWidget()
       self.verticalLayout_2.insertWidget(0,self.image_widget)
 
-
-      # self.im_builder = ImageBuilder()
+      #Pathfinder class
       self.pathfinder = None
 
+      #List avaiable algo and data
       self.populate_algo_list()
       self.populate_data_list()
+
+      #Set stepts slider to 0
       self.sld_steps.setMinimum(0)
-
-
-
-    def display_image(self,image):
-      scale = 1
-      disp_size = image.shape[1]//scale, image.shape[0]//scale
-      disp_bpl = disp_size[0] * 3
-      if scale > 1:
-          image = cv.resize(image, disp_size, 
-                           interpolation=cv.INTER_CUBIC)
-      qim = QImage(image.data, disp_size[0], disp_size[1],QImage.Format_RGB888)
-      self.image_widget.setImage(qim)
 
     def get_implemented_algorithm(self):
       return [cls.__name__ for cls in Pathfinder.__subclasses__()]
@@ -96,11 +86,5 @@ class Tab_Pathfinder(QWidget):
         text = f"Step {self.current_step} / {self.total_steps}" 
 
       img = ImageBuilder.build(b_type='pathfinder',data=self.pathfinder.steps[self.current_step] )
-      self.display_image(img)
+      self.image_widget.setImage(display_image(img))
       self.lbl_step.setText(text)
-
-    def build_image(self):
-      image = self.im_builder.build_image_arr(self.pathfinder.steps[self.current_step])
-      q_pix = QPixmap.fromImage(QImage(image.data,image.shape[1],image.shape[0],QImage.Format_RGB888))
-
-      return q_pix

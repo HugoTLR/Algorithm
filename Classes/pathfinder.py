@@ -1,14 +1,12 @@
-import math
-from copy import deepcopy as dc
+#System
 from collections import defaultdict
+from copy import deepcopy as dc
 from heapq import heappush,heappop
 from sys import maxsize
-
+#Local
 from cste import SYMBOLS, DIR
+
 class Pathfinder:
-
-
-
   def __init__(self):
     pass
 
