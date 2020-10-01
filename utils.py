@@ -11,5 +11,5 @@ def display_image(image):
   if IMAGE_SCALE > 1:
       image = resize(image, disp_size, 
                        interpolation=INTER_CUBIC)
-  qim = QImage(image.data, disp_size[0], disp_size[1],QImage.Format_RGB888)
+  qim = QImage(image.data, disp_size[0], disp_size[1],disp_bpl,QImage.Format_RGB888)
   return qim

@@ -17,6 +17,8 @@ class ImageBuilder:
       return ListBuilder.build(**kwargs)
     elif b_type == 'pathfinder':
       return ArrBuilder.build(**kwargs)
+    elif b_type == 'eca':
+      return EcaBuilder.build(**kwargs)
     else:
       raise NotImplementedError('Call child method plz') 
 
@@ -69,7 +71,17 @@ class ArrBuilder(ImageBuilder):
     image = cv.resize(image,(WIDTH,HEIGHT),interpolation=cv.INTER_AREA)
     return image
 
-
+class EcaBuilder(ImageBuilder):
+  @staticmethod
+  def build(**kwargs):
+    #BOTH DIC OF KEY: idx  VALUE: value / status
+    states = kwargs['data']
+    image = kwargs['im']
+    step = kwargs['step']
+    state = states[step]
+    for i,val in enumerate(state):
+      image[step][i] = (val*255,val*255,val*255)
+    return image
 
 if __name__ == "__main__":
 

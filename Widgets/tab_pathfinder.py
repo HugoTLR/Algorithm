@@ -12,6 +12,7 @@ from utils import display_image
 from Widgets.ImageWidget import ImageWidget 
 
 import cv2 as cv
+
 class Tab_Pathfinder(QWidget):
     def __init__(self):
       super(Tab_Pathfinder,self).__init__()

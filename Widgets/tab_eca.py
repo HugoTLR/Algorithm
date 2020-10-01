@@ -1,15 +1,21 @@
-import sys
-from envvar import UIS_FOLDER,DATA_FOLDER
-from glob import glob
-from PyQt5.uic import loadUi
-from PyQt5.QtGui import QImage,QPixmap
-from PyQt5.QtWidgets import QWidget
-from Classes.eca import ECA
-from image import ImageBuilder
-import threading
-import time
+#3rd Party
 import cv2 as cv
 import numpy as np
+from PyQt5.QtGui import QImage,QPixmap
+from PyQt5.QtWidgets import QWidget
+from PyQt5.uic import loadUi
+#System
+from glob import glob
+import sys
+import threading
+import time
+#Local
+from Classes.eca import ECA
+from envvar import UIS_FOLDER,DATA_FOLDER
+from ImageBuilder import *
+from utils import display_image
+from Widgets.ImageWidget import ImageWidget 
+
 
 class Tab_ECA(QWidget):
   def __init__(self):
@@ -17,12 +23,12 @@ class Tab_ECA(QWidget):
     #Load UI From ui file
     loadUi(f'{UIS_FOLDER}/tab_eca.ui',self) #Load Ui From QT
 
-    self.im_builder = ImageBuilder()
+    #Insert image widget
+    self.image_widget = ImageWidget()
+    self.verticalLayout_2.insertWidget(0,self.image_widget)
+
     self.eca = None
 
-
-
-    # self.show()
 
   def anim_listener(self,stop_event):
     for k in range(self.eca.n_steps):
@@ -46,16 +52,8 @@ class Tab_ECA(QWidget):
     self.stop_event = threading.Event()
     self.c_thread = threading.Thread(target=self.anim_listener,args=(self.stop_event,))
 
-
     self.c_thread.start()
 
-
-
   def update_visual(self,step):
-    img = self.build_image(step)
-    self.lbl_visu.setPixmap(img)
-
-  def build_image(self,step):
-    self.image = self.im_builder.build_image_eca(self.image,self.eca.states,step)
-    q_pix = QPixmap.fromImage(QImage(self.image.data,self.image.shape[1],self.image.shape[0],self.image.shape[1]*3,QImage.Format_RGB888))
-    return q_pix
+    img = ImageBuilder.build(b_type='eca',data=self.eca.states,step=step, im=self.image )
+    self.image_widget.setImage(display_image(img))
