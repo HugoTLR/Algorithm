@@ -1,7 +1,10 @@
+#3rd Party
+import cv2 as cv
+#System
 import math
 import random
-import cv2 as cv
 from time import time
+#Local
 
 
 class Range:

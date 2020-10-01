@@ -1,9 +1,14 @@
+#3rd Party
 import cv2 as cv
-
 from numpy import zeros, uint8
+#System
 import random
-
+#Local
 from cste import *
+
+
+
+
 
 
 
@@ -12,15 +17,16 @@ from cste import *
 class ImageBuilder:
   @staticmethod
   def build(b_type,**kwargs):
-    data = kwargs['data']
     if b_type == 'sorter':
       return ListBuilder.build(**kwargs)
     elif b_type == 'pathfinder':
       return ArrBuilder.build(**kwargs)
     elif b_type == 'eca':
       return EcaBuilder.build(**kwargs)
+    elif b_type == 'qtree':
+      return QTreeBuilder.build(**kwargs)
     else:
-      raise NotImplementedError('Call child method plz') 
+      raise NotImplementedError('Type not implemented') 
 
   @staticmethod
   def norm(data):
@@ -55,12 +61,10 @@ class ListBuilder(ImageBuilder):
 
 
 class ArrBuilder(ImageBuilder):
-
   @staticmethod
   def build(**kwargs):
     #BOTH DIC OF KEY: idx  VALUE: value / status
     data = kwargs['data']
-   
     h, w = len(data), len(data[0])
     image = zeros((h*PATTERN_SIZE,w*PATTERN_SIZE,3),dtype=uint8)
    
@@ -82,6 +86,41 @@ class EcaBuilder(ImageBuilder):
     for i,val in enumerate(state):
       image[step][i] = (val*255,val*255,val*255)
     return image
+
+class QTreeBuilder(ImageBuilder):
+  @staticmethod
+  def build(**kwargs):
+    from Classes.quadratic import Quadratic,QuadTree,Pt
+    obj = kwargs['data']
+    image = kwargs['im']
+    quads = kwargs['quads']
+    resize = kwargs['resize']
+
+    if image is None:
+      image = zeros((Quadratic.WIN_H,Quadratic.WIN_W,3),dtype=uint8)
+
+    if obj is not None:
+
+      if type(obj) == QuadTree:
+        for p in obj.points:
+          QTreeBuilder.build(data=p,im=image,quads= False,resize=False)
+        if quads:
+          tl = obj.roi.cx-int(obj.roi.w/2),obj.roi.cy-int(obj.roi.h/2)
+          br = obj.roi.cx+int(obj.roi.w/2),obj.roi.cy+int(obj.roi.h/2)
+          cv.rectangle(image,tl,br,COLORS["GREEN"],1)
+
+        for q in obj.child.values():
+          QTreeBuilder.build(data=q,im=image,quads=quads,resize=False)
+      elif type(obj) == Pt:
+        color = COLORS["WHITE"]
+        if obj.highlited:
+          color = COLORS["RED"]
+
+        cv.circle(image,(int(obj.cx),int(obj.cy)),(obj.radius),color,-1)
+    if resize:
+      image = cv.resize(image,(WIDTH,HEIGHT),interpolation=cv.INTER_AREA)
+    return image
+
 
 if __name__ == "__main__":
 

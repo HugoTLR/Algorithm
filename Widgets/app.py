@@ -1,13 +1,16 @@
-import sys
-from envvar import UIS_FOLDER,WIDGETS_FOLDER
-from glob import glob
-from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QMainWindow, QTabWidget
+#3rd Party
 from PyQt5.QtCore import Qt
-from Widgets.tab_sorter import Tab_Sorter
+from PyQt5.QtWidgets import QMainWindow, QTabWidget
+from PyQt5.uic import loadUi
+#System
+from glob import glob
+#Local
+from envvar import UIS_FOLDER,WIDGETS_FOLDER
+import sys
+from Widgets.tab_eca import Tab_ECA
 from Widgets.tab_pathfinder import Tab_Pathfinder
 from Widgets.tab_quadratic import Tab_Quadratic
-from Widgets.tab_eca import Tab_ECA
+from Widgets.tab_sorter import Tab_Sorter
 
 class App(QMainWindow):
 
@@ -21,10 +24,8 @@ class App(QMainWindow):
     #Load UI From ui file
     loadUi(f'{UIS_FOLDER}/app.ui',self)
 
-
     #Initialise TabWidget
     self.tab_widget = QTabWidget()
-
 
     #Automate This
     #Sorting

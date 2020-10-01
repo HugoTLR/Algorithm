@@ -1,7 +1,8 @@
-#3rd party imports
+#3rd Party
 from cv2 import  resize,INTER_CUBIC
 from PyQt5.QtGui import QImage
-#Local imports
+#System
+#Local
 from cste import IMAGE_SCALE
 
 def display_image(image):

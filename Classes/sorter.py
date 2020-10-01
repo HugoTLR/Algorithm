@@ -1,6 +1,8 @@
+#3rd Party
+#System
 from copy import deepcopy as dc
 import math
-
+#Local
 class Sorter:
   def __init__(self):
     pass

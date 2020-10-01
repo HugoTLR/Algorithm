@@ -1,7 +1,10 @@
-from .utils import GET_BIN
+#3rd Party
 import cv2  as cv
 from numpy import array,uint8
+#System
 from random import choice
+#Local
+from .utils import GET_BIN
 
 class ECA:
   def __init__(self,w,n_steps,rule_id,rand):

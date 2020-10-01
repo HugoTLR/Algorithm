@@ -1,15 +1,21 @@
-import sys
-from envvar import UIS_FOLDER,DATA_FOLDER
-from glob import glob
-from PyQt5.uic import loadUi
+#3rd Party
+import numpy as np
 from PyQt5.QtGui import QImage,QPixmap
 from PyQt5.QtWidgets import QWidget
-import threading
-from image import ImageBuilder
+from PyQt5.uic import loadUi
+#System
+from glob import glob
 import random
-from Classes.quadratic import *
 import time 
-import numpy as np
+import threading
+import sys
+#Local
+from Classes.quadratic import *
+from envvar import UIS_FOLDER,DATA_FOLDER
+from ImageBuilder import *
+from utils import display_image
+from Widgets.ImageWidget import ImageWidget 
+
 class Tab_Quadratic(QWidget):
     def __init__(self):
       super(Tab_Quadratic,self).__init__()
@@ -17,11 +23,15 @@ class Tab_Quadratic(QWidget):
       loadUi(f'{UIS_FOLDER}/tab_quadratic.ui',self) #Load Ui From QT
 
       self.CPT = 0
-      self.im_builder = ImageBuilder()
+      # self.im_builder = ImageBuilder()
+
+      #Insert image widget
+      self.image_widget = ImageWidget()
+      self.verticalLayout_2.insertWidget(0,self.image_widget)
+
       self.quadra = None
       self.c_thread = None
       self.lbl_fps.setText(f"Average FPS : ")
-      # self.show()
 
     def anim_listener(self,stop_event):
       state = True
@@ -31,8 +41,6 @@ class Tab_Quadratic(QWidget):
         #Since our particles are moving
         if self.quadra.show_quad:
           self.quadra.create_qtree()
-
-
 
         #Check Collision
         if self.quadra.collision_loop:
@@ -82,19 +90,9 @@ class Tab_Quadratic(QWidget):
         self.quadra.collision_loop = True
 
     def clear_visual(self):
-      self.lbl_visu.clear()
+      self.image_widget.clear()
 
     def update_visual(self):
-      img = self.build_image()
-
-      
-      self.lbl_visu.setPixmap(img)
-
-    def build_image(self):
-      image = self.im_builder.build_image_qtree(self.quadra.qtree,quads=self.quadra.show_quad)
-      self.CPT += 1
-      if self.CPT%10 == 0:
-        cv.imwrite(f"./Images/gif_{self.CPT}.png",cv.cvtColor(image,cv.COLOR_RGB2BGR))
-      q_pix = QPixmap.fromImage(QImage(image.data,image.shape[1],image.shape[0],QImage.Format_RGB888))
-      return q_pix
+      img = ImageBuilder.build(b_type='qtree', data=self.quadra.qtree, im=None, quads=self.quadra.show_quad,resize=True )
+      self.image_widget.setImage(display_image(img))
 
