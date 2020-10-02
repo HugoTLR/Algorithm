@@ -7,11 +7,11 @@ from glob import glob
 import sys
 #Local
 from cste import *
-from Widgets.tab_ECA import Tab_ECA
-from Widgets.tab_Pathfinder import Tab_Pathfinder
-from Widgets.tab_Quadratic import Tab_Quadratic
-from Widgets.tab_Sorter import Tab_Sorter
-from Widgets.tab_Other import Tab_Other
+from Widgets.Tab.tab_ECA import Tab_ECA
+from Widgets.Tab.tab_Pathfinder import Tab_Pathfinder
+from Widgets.Tab.tab_Quadratic import Tab_Quadratic
+from Widgets.Tab.tab_Sorter import Tab_Sorter
+from Widgets.Tab.tab_Other import Tab_Other
 
 class App(QMainWindow):
   ###################
@@ -46,7 +46,7 @@ class App(QMainWindow):
 
   def get_tabs_widget(self):
     tabs_name = []
-    for file in glob(f"{WIDGETS_FOLDER}/tab_*.py"):
+    for file in glob(f"{WIDGETS_FOLDER}/Tab/tab_*.py"):
       f_name = file.split('\\')[-1]
       f_name = f_name.split('.')[0].split('_')[1]
       tabs_name.append(f_name.title())

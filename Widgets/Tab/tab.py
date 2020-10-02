@@ -4,8 +4,8 @@ from PyQt5.uic import loadUi
 #System
 from glob import glob
 #Local
+from Classes.ImageBuilder import *
 from cste import UIS_FOLDER,DATA_FOLDER
-from ImageBuilder import *
 from utils import display_image
 from Widgets.ImageWidget import ImageWidget
 

@@ -9,7 +9,7 @@ import time
 #Local
 from Classes.eca import ECA
 from cste import ECA_WIDTH, ECA_HEIGHT
-from Widgets.tab import Tab
+from Widgets.Tab.tab import Tab
 
 
 class Tab_ECA(Tab):

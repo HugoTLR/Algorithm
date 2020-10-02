@@ -7,7 +7,7 @@ import threading
 import time
 #Local
 from Classes.other import *
-from Widgets.tab import Tab
+from Widgets.Tab.tab import Tab
 
 
 class Tab_Other(Tab):

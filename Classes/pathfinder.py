@@ -156,7 +156,7 @@ class AStar(Pathfinder):
 
   def compute_graph(self):
     path = self.aStar()
-    print(f"FINAL PATH : {path}")
+    # print(f"FINAL PATH : {path}")
 
 
 
@@ -209,7 +209,7 @@ class AStar(Pathfinder):
       VISITED.append(current)
 
       if current == self.target:
-        print(f"Found ! Score of last cell : {g_scores[current]=}  {f_scores[current]=}")
+        # print(f"Found ! Score of last cell : {g_scores[current]=}  {f_scores[current]=}")
         path = self.reconstruct_path(came_from,current)
         break
 

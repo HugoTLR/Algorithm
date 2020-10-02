@@ -4,7 +4,7 @@ from glob import glob
 import sys
 #Local
 from Classes.pathfinder import *
-from Widgets.tab import Tab
+from Widgets.Tab.tab import Tab
 
 import cv2 as cv
 

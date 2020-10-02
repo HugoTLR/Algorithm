@@ -7,7 +7,7 @@ import threading
 import sys
 #Local
 from Classes.quadratic import *
-from Widgets.tab import Tab
+from Widgets.Tab.tab import Tab
 
 class Tab_Quadratic(Tab):
     def __init__(self):

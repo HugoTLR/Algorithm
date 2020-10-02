@@ -2,7 +2,7 @@
 #System
 #Local
 from Classes.sorter import *
-from Widgets.tab import Tab
+from Widgets.Tab.tab import Tab
 
 class Tab_Sorter(Tab):
     """
@@ -34,7 +34,7 @@ class Tab_Sorter(Tab):
       """
       item = self.lst_func.currentItem().text()
       data = self.get_data_from_file()
-      print(f"Sorting {len(data)} items")
+      
       if data == None:
         return
 
