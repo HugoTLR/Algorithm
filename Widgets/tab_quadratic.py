@@ -1,8 +1,5 @@
 #3rd Party
 import numpy as np
-from PyQt5.QtGui import QImage,QPixmap
-from PyQt5.QtWidgets import QWidget
-from PyQt5.uic import loadUi
 #System
 from glob import glob
 import random
@@ -10,27 +7,17 @@ import threading
 import sys
 #Local
 from Classes.quadratic import *
-from cste import UIS_FOLDER,DATA_FOLDER
-from ImageBuilder import *
-from utils import display_image
-from Widgets.ImageWidget import ImageWidget 
+from Widgets.tab import Tab
 
-class Tab_Quadratic(QWidget):
+class Tab_Quadratic(Tab):
     def __init__(self):
-      super(Tab_Quadratic,self).__init__()
-      #Load UI From ui file
-      loadUi(f'{UIS_FOLDER}/tab_quadratic.ui',self) #Load Ui From QT
+      super(Tab_Quadratic,self).__init__('Quadratic')
+      self.className = Quadratic
 
-      self.CPT = 0
-      # self.im_builder = ImageBuilder()
-
-      #Insert image widget
-      self.image_widget = ImageWidget()
-      self.verticalLayout_2.insertWidget(0,self.image_widget)
-
-      self.quadra = None
+      self.object = None
       self.c_thread = None
       self.lbl_fps.setText(f"Average FPS : ")
+      
 
     def anim_listener(self,stop_event):
       import time 
@@ -40,18 +27,18 @@ class Tab_Quadratic(QWidget):
 
         #Check if we need to recompute the quad structure on each loop
         #Since our particles are moving
-        if self.quadra.show_quad:
-          self.quadra.create_qtree()
+        if self.object.show_quad:
+          self.object.create_qtree()
 
         #Check Collision
-        if self.quadra.collision_loop:
-          self.quadra.normal_collision_check()
+        if self.object.collision_loop:
+          self.object.normal_collision_check()
         else:
-          self.quadra.qtree = self.quadra.check_collision(self.quadra.qtree)
+          self.object.qtree = self.object.check_collision(self.object.qtree)
         #Draw
         self.update_visual()
         #Update
-        self.quadra.qtree = self.quadra.update_qtree(self.quadra.qtree)
+        self.object.qtree = self.object.update_qtree(self.object.qtree)
 
         end = time.time()
 
@@ -65,9 +52,9 @@ class Tab_Quadratic(QWidget):
       nb_points = int(self.txt_points.toPlainText())
       pt_limit = int(self.txt_limit.toPlainText())
       points = [Pt(random.randint(0,Quadratic.WIN_W),random.randint(0,Quadratic.WIN_H),3) for _ in range(nb_points)]
-      self.quadra = Quadratic(nb_points,pt_limit)
-      self.quadra.update_points(points)
-      self.quadra.create_qtree()
+      self.object = Quadratic(nb_points,pt_limit)
+      self.object.update_points(points)
+      self.object.create_qtree()
       self.stop_event = threading.Event()
       self.c_thread = threading.Thread(target=self.anim_listener,args=(self.stop_event,))
 
@@ -77,24 +64,14 @@ class Tab_Quadratic(QWidget):
     def slt_stop(self):
       self.stop_event.set()
       self.c_thread.join()
-
-
       self.clear_visual()
     
     def slt_quads_changed(self,value):
-      self.quadra.show_quad = False
+      self.object.show_quad = False
       if value != 0:
-        self.quadra.show_quad = True
+        self.object.show_quad = True
 
     def slt_collision_changed(self,value):
-      self.quadra.collision_loop = False
+      self.object.collision_loop = False
       if value != 0:
-        self.quadra.collision_loop = True
-
-    def clear_visual(self):
-      self.image_widget.clear()
-
-    def update_visual(self):
-      img = ImageBuilder.build(b_type='qtree', data=self.quadra.qtree, im=None, quads=self.quadra.show_quad,resize=True )
-      self.image_widget.setImage(display_image(img))
-
+        self.object.collision_loop = True

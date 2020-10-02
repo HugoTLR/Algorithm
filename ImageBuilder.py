@@ -10,13 +10,13 @@ from cste import *
 class ImageBuilder:
   @staticmethod
   def build(b_type,**kwargs):
-    if b_type == 'sorter':
+    if b_type == 'Sorter':
       return ListBuilder.build(**kwargs)
-    elif b_type == 'pathfinder':
+    elif b_type == 'Pathfinder':
       return ArrBuilder.build(**kwargs)
-    elif b_type == 'eca':
+    elif b_type == 'ECA':
       return EcaBuilder.build(**kwargs)
-    elif b_type == 'qtree':
+    elif b_type == 'Quadratic':
       return QTreeBuilder.build(**kwargs)
     else:
       raise NotImplementedError('Type not implemented') 

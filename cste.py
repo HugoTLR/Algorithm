@@ -106,7 +106,7 @@ DIR = [(-1,0),(0,1),(1,0),(0,-1)]
 ##  Marching Square  ##
 #######################
 RESO = 10
-FEATURE_SIZE = 10
+FEATURE_SIZE = 5
 M_WIDTH = 600
 M_HEIGHT = 450
 N_WIDTH = M_WIDTH // RESO

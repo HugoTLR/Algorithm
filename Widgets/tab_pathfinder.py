@@ -1,58 +1,23 @@
 #3rd party
-from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QWidget
 #System
 from glob import glob
 import sys
 #Local
 from Classes.pathfinder import *
-from cste import UIS_FOLDER,DATA_FOLDER
-from ImageBuilder import *
-from utils import display_image
-from Widgets.ImageWidget import ImageWidget 
+from Widgets.tab import Tab
 
 import cv2 as cv
 
-class Tab_Pathfinder(QWidget):
+class Tab_Pathfinder(Tab):
     def __init__(self):
-      super(Tab_Pathfinder,self).__init__()
-      #Load UI From ui file
-      loadUi(f'{UIS_FOLDER}/tab_pathfinder.ui',self) #Load Ui From QT
-
-
-      #Insert image widget
-      self.image_widget = ImageWidget()
-      self.verticalLayout_2.insertWidget(0,self.image_widget)
-
-      #Pathfinder class
-      self.pathfinder = None
+      super(Tab_Pathfinder,self).__init__('Pathfinder')
+      self.className = Pathfinder
 
       #List avaiable algo and data
-      self.populate_algo_list()
-      self.populate_data_list()
+      self.populate()
 
       #Set stepts slider to 0
       self.sld_steps.setMinimum(0)
-
-    def get_implemented_algorithm(self):
-      return [cls.__name__ for cls in Pathfinder.__subclasses__()]
-
-    def populate_algo_list(self):
-      for algorithm in self.get_implemented_algorithm():
-        self.lst_func.addItem(algorithm)
-
-    def populate_data_list(self):
-      for file in glob(f"{DATA_FOLDER}/Pathfinder/*.txt"):
-        f_name = file.split('\\')[-1]
-        self.lst_data.addItem(f_name)
-
-    def get_data_from_file(self):
-      try:
-        f_name = self.lst_data.currentItem().text()
-      except AttributeError:
-        return None
-      txt = open(f"{DATA_FOLDER}/Pathfinder/{f_name}",'r').read()
-      return [[col for col in row] for row in txt.split('\n')]
 
     def slt_sld_steps(self,val):
       self.current_step = val
@@ -67,25 +32,13 @@ class Tab_Pathfinder(QWidget):
 
       ##FILL
       if item == "Dijkstra":
-        self.pathfinder = Dijkstra()
+        self.object = Dijkstra()
       elif item == "AStar":
-        self.pathfinder = AStar()
+        self.object = AStar()
 
-      self.pathfinder.solve(data)
-      self.total_steps = len(self.pathfinder.steps)-1
+      self.object.solve(data)
+      self.total_steps = len(self.object.steps)-1
       self.sld_steps.setMaximum(self.total_steps)
       self.sld_steps.setValue(self.current_step)
       self.update_visual()
 
-
-    def update_visual(self):
-      if self.current_step == 0:
-        text = "Initial Step"
-      elif self.current_step == self.total_steps:
-        text = "Final Step"
-      else:
-        text = f"Step {self.current_step} / {self.total_steps}" 
-
-      img = ImageBuilder.build(b_type='pathfinder',data=self.pathfinder.steps[self.current_step] )
-      self.image_widget.setImage(display_image(img))
-      self.lbl_step.setText(text)

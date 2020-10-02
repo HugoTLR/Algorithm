@@ -14,7 +14,6 @@ class Other:
   def __init__(self):
     pass
 
-
   def rescale(self,val,o_start,o_end,start,end):
     return (val-o_start)*(end-start) / (o_end-o_start)+start
 
@@ -31,7 +30,7 @@ class MarchingSquare(Other):
 
   def update(self):
     img = full((M_HEIGHT,M_WIDTH),127,uint8)
-    grid = array([[(self.ops.noise3d(i/FEATURE_SIZE,j/FEATURE_SIZE,self.z)) for i in range(N_WIDTH)] for j in range(N_HEIGHT)])
+    grid = array([[(self.ops.noise3d(i/FEATURE_SIZE,j/FEATURE_SIZE,self.z)) for i in range(N_WIDTH + 1)] for j in range(N_HEIGHT + 1)])
     grid = self.scale(grid)
 
     img = self.draw_corners(img,grid)

@@ -7,11 +7,11 @@ from glob import glob
 import sys
 #Local
 from cste import *
-from Widgets.tab_eca import Tab_ECA
-from Widgets.tab_pathfinder import Tab_Pathfinder
-from Widgets.tab_quadratic import Tab_Quadratic
-from Widgets.tab_sorter import Tab_Sorter
-from Widgets.tab_other import Tab_Other
+from Widgets.tab_ECA import Tab_ECA
+from Widgets.tab_Pathfinder import Tab_Pathfinder
+from Widgets.tab_Quadratic import Tab_Quadratic
+from Widgets.tab_Sorter import Tab_Sorter
+from Widgets.tab_Other import Tab_Other
 
 class App(QMainWindow):
   ###################
@@ -43,7 +43,6 @@ class App(QMainWindow):
   def build_tabs(self):
     for tab in self.get_tabs_widget():
         self.tab_widget.addTab(App.TAB_TO_CLASS[tab](),tab)
-
 
   def get_tabs_widget(self):
     tabs_name = []
