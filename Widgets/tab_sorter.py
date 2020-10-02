@@ -6,7 +6,7 @@ from glob import glob
 import sys
 #Local
 from Classes.sorter import *
-from envvar import UIS_FOLDER,DATA_FOLDER
+from cste import UIS_FOLDER,DATA_FOLDER
 from ImageBuilder import *
 from utils import display_image
 from Widgets.ImageWidget import ImageWidget 
@@ -21,7 +21,6 @@ class Tab_Sorter(QWidget):
       super(Tab_Sorter,self).__init__()
       loadUi(f'{UIS_FOLDER}/tab_sorter.ui',self)
       # Instantiate Image wrapper and Algo Sorter
-      self.im_builder = ImageBuilder()
       self.sorter = None
 
       self.image_widget = ImageWidget()

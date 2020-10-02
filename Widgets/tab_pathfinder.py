@@ -6,7 +6,7 @@ from glob import glob
 import sys
 #Local
 from Classes.pathfinder import *
-from envvar import UIS_FOLDER,DATA_FOLDER
+from cste import UIS_FOLDER,DATA_FOLDER
 from ImageBuilder import *
 from utils import display_image
 from Widgets.ImageWidget import ImageWidget 

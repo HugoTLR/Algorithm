@@ -1,12 +1,33 @@
-from numpy import uint8, zeros
+#3rd party
 from cv2 import rectangle
+from numpy import uint8, zeros
+#System
+#Local
 
-##IMAGE
+########################
+##  Application Path  ##
+########################
+CLASSES_FOLDER  = "./Classes"
+DATA_FOLDER     = "./Data"
+UIS_FOLDER      = "./Uis"
+WIDGETS_FOLDER  = "./Widgets"
+########################
+
+
+
+#######################
+##  Image Rendering  ##
+#######################
 WIDTH = 960
 HEIGHT = 720
 PATTERN_SIZE = 13
 IMAGE_SCALE = 1
-#GLOBAL COLORS
+#######################
+
+
+#####################
+##  Global colors  ##
+#####################
 STATUS = {
   0: "GRAY",
   1: "WHITE",
@@ -40,9 +61,19 @@ def build_pattern(s):
 
 PATTERNS = {}
 for s in STATUS: PATTERNS[s] = build_pattern(s)
+#####################
 
 
-##PATHFINDER
+##################
+##  Eca  ##
+##################
+ECA_WIDTH = WIDTH - 1
+ECA_HEIGHT = ECA_WIDTH//2
+##################
+
+##################
+##  Pathfinder  ##
+##################
 SYMBOLS = {
   "EMPTY"   : '.',
   "VISITED" : 'V',
@@ -69,3 +100,16 @@ SYM_TO_STAT = {
 }
 
 DIR = [(-1,0),(0,1),(1,0),(0,-1)]
+##################
+
+#######################
+##  Marching Square  ##
+#######################
+RESO = 10
+FEATURE_SIZE = 10
+M_WIDTH = 600
+M_HEIGHT = 450
+N_WIDTH = M_WIDTH // RESO
+N_HEIGHT = M_HEIGHT // RESO
+Z_INC = .1
+#######################

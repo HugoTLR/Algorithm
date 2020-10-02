@@ -11,7 +11,7 @@ import threading
 import time
 #Local
 from Classes.eca import ECA
-from envvar import UIS_FOLDER,DATA_FOLDER
+from cste import *
 from ImageBuilder import *
 from utils import display_image
 from Widgets.ImageWidget import ImageWidget 
@@ -46,7 +46,7 @@ class Tab_ECA(QWidget):
     rule_id = int(self.txt_rule.toPlainText())
     is_random = self.cb_random.isChecked()
 
-    self.eca = ECA(901,450,rule_id,is_random)
+    self.eca = ECA(ECA_WIDTH,ECA_HEIGHT,rule_id,is_random)
 
     self.image = np.zeros((self.eca.n_steps,self.eca.w,3),dtype=np.uint8)
     self.stop_event = threading.Event()

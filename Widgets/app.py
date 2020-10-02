@@ -4,20 +4,25 @@ from PyQt5.QtWidgets import QMainWindow, QTabWidget
 from PyQt5.uic import loadUi
 #System
 from glob import glob
-#Local
-from envvar import UIS_FOLDER,WIDGETS_FOLDER
 import sys
+#Local
+from cste import *
 from Widgets.tab_eca import Tab_ECA
 from Widgets.tab_pathfinder import Tab_Pathfinder
 from Widgets.tab_quadratic import Tab_Quadratic
 from Widgets.tab_sorter import Tab_Sorter
+from Widgets.tab_other import Tab_Other
 
 class App(QMainWindow):
-
-  TAB_TO_CLASS = {"Sorter":Tab_Sorter,\
-                    "Pathfinder":Tab_Pathfinder,\
-                    "Quadratic":Tab_Quadratic,\
-                    "Eca":Tab_ECA}
+  ###################
+  ##  Application  ##
+  ###################
+  TAB_TO_CLASS = {"Sorter":Tab_Sorter,
+                    "Pathfinder":Tab_Pathfinder,
+                    "Quadratic":Tab_Quadratic,
+                    "Eca":Tab_ECA,
+                    "Other":Tab_Other}
+  ###################
 
   def __init__(self):
     super(App,self).__init__()

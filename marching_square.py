@@ -6,6 +6,8 @@ from random import choice,random, uniform
 from math import ceil
 from opensimplex import OpenSimplex
 
+import time
+
 def draw_corners(img,grid):
   for j, row in enumerate(grid):
     for i, col in enumerate(row):
@@ -69,6 +71,7 @@ if __name__ == "__main__":
   ops = OpenSimplex()
   z_inc = 0
   while True:
+    s = time.time()
     img = np.full((HEIGHT,WIDTH),127,dtype=np.uint8)
     grid = np.array([[(ops.noise3d(i/FEATURE_SIZE,j/FEATURE_SIZE,z_inc)) for i in range(N_WIDTH)] for j in range(N_HEIGHT)])
     grid = scale(grid)
@@ -83,4 +86,4 @@ if __name__ == "__main__":
       break
 
     z_inc += 0.1
-
+    print(f"Avg FPS : {1/(time.time()-s):.5f}")

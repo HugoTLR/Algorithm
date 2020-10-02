@@ -6,7 +6,7 @@ from PyQt5.QtGui import QImage
 from cste import IMAGE_SCALE
 
 def display_image(image):
-  h,w,c = image.shape
+  h,w = image.shape[:2]
   disp_size = w//IMAGE_SCALE, h//IMAGE_SCALE
   disp_bpl = disp_size[0] * 3
   if IMAGE_SCALE > 1:

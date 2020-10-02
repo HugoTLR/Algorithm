@@ -6,12 +6,11 @@ from PyQt5.uic import loadUi
 #System
 from glob import glob
 import random
-import time 
 import threading
 import sys
 #Local
 from Classes.quadratic import *
-from envvar import UIS_FOLDER,DATA_FOLDER
+from cste import UIS_FOLDER,DATA_FOLDER
 from ImageBuilder import *
 from utils import display_image
 from Widgets.ImageWidget import ImageWidget 
@@ -34,9 +33,11 @@ class Tab_Quadratic(QWidget):
       self.lbl_fps.setText(f"Average FPS : ")
 
     def anim_listener(self,stop_event):
+      import time 
       state = True
       while state and not stop_event.isSet():
         start = time.time()
+
         #Check if we need to recompute the quad structure on each loop
         #Since our particles are moving
         if self.quadra.show_quad:
@@ -51,6 +52,7 @@ class Tab_Quadratic(QWidget):
         self.update_visual()
         #Update
         self.quadra.qtree = self.quadra.update_qtree(self.quadra.qtree)
+
         end = time.time()
 
         self.lbl_fps.setText(f"Average FPS : {1/(end-start):.5f}")

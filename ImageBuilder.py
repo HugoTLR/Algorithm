@@ -4,15 +4,8 @@ from numpy import zeros, uint8
 #System
 import random
 #Local
+from Classes.quadratic import Quadratic,QuadTree,Pt
 from cste import *
-
-
-
-
-
-
-
-
 
 class ImageBuilder:
   @staticmethod
@@ -78,7 +71,6 @@ class ArrBuilder(ImageBuilder):
 class EcaBuilder(ImageBuilder):
   @staticmethod
   def build(**kwargs):
-    #BOTH DIC OF KEY: idx  VALUE: value / status
     states = kwargs['data']
     image = kwargs['im']
     step = kwargs['step']
@@ -90,7 +82,6 @@ class EcaBuilder(ImageBuilder):
 class QTreeBuilder(ImageBuilder):
   @staticmethod
   def build(**kwargs):
-    from Classes.quadratic import Quadratic,QuadTree,Pt
     obj = kwargs['data']
     image = kwargs['im']
     quads = kwargs['quads']
@@ -100,7 +91,6 @@ class QTreeBuilder(ImageBuilder):
       image = zeros((Quadratic.WIN_H,Quadratic.WIN_W,3),dtype=uint8)
 
     if obj is not None:
-
       if type(obj) == QuadTree:
         for p in obj.points:
           QTreeBuilder.build(data=p,im=image,quads= False,resize=False)
