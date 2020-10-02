@@ -2,7 +2,8 @@ import sys
 from cv2 import line, circle, imshow, waitKey, destroyAllWindows, setMouseCallback, EVENT_MOUSEMOVE
 from numpy import full, uint8
 from math import cos, sin, radians, sqrt
-from random import randint
+from random import randint, randrange, random, uniform
+from opensimplex import OpenSimplex
 
 CST = 10
 class Ray:
@@ -43,7 +44,7 @@ class Ray:
       return None
 
   def draw(self,img,pt):
-    line(img,(self.parent.x,self.parent.y),pt,255,1)
+    line(img,(self.parent.x,self.parent.y),pt,200,1)
     return img
 
 class Boundary:
@@ -60,6 +61,7 @@ class Particle:
     self.x = x
     self.y = y
     self.rays = self.build_rays(nb_rays)
+
 
   def update(self,x,y):
     self.x = x
@@ -89,7 +91,7 @@ class Particle:
       
       if min_pt is not None:
         img = ray.draw(img,min_pt)
-    circle(img,(self.x,self.y),5,127,-1)
+    circle(img,(self.x,self.y),5,255,-1)
     return img
 
 def init(boundaries):
@@ -134,10 +136,16 @@ def mouse_move(event, x, y, flags, param):
     imshow('image', img) 
     # print("\n\n\n")
 
+def rescale(val,o_start,o_end,start,end):
+  return (val-o_start)*(end-start) / (o_end-o_start)+start
 
 if __name__ == "__main__":
   WIDTH = 600
   HEIGHT = 400
+
+  ops = OpenSimplex()
+  print(dir(ops))
+
 
 
   boundaries = generate_borders()
@@ -148,14 +156,37 @@ if __name__ == "__main__":
 
   particle = Particle(int(WIDTH/2),int(HEIGHT/2),100)
 
-  img = draw(img,origin=particle,boundaries=boundaries)
-
-  imshow('image', img) 
 
 
   
 
+  #Particle follow mouse
+  # img = draw(img,origin=particle,boundaries=boundaries)
+
+  # imshow('image', img) 
+  #setMouseCallback('image', mouse_move,[boundaries,particle]) 
   
-  setMouseCallback('image', mouse_move,[boundaries,particle]) 
-  waitKey() 
+  #Particle move randomly
+
+  xoff = 0
+  yoff = 10
+  while True:
+
+    img = init(boundaries)
+    noise_X = ops.noise2d(xoff,xoff)
+    noise_X = rescale(noise_X,-1,1,0,1)*WIDTH
+    noise_Y = ops.noise2d(yoff,yoff)
+    noise_Y = rescale(noise_Y,-1,1,0,1)*HEIGHT
+    
+    particle.update(int(noise_X) , int(noise_Y))
+    img = draw(img,origin=particle,boundaries=boundaries)
+
+
+    xoff += .001
+    yoff += .001
+    imshow('image', img) 
+    key = waitKey(1)
+    if key == ord('q') & 0xFF:
+      break
+
   destroyAllWindows()
