@@ -4,8 +4,9 @@ import cv2 as cv
 from opensimplex import OpenSimplex
 from numpy import array, full, uint8
 #System
-from math import ceil
-from random import choice, random, uniform
+from math import ceil, cos, sin, radians, sqrt
+from random import choice, random, uniform, randint
+import sys
 #Local
 from cste import *
 
@@ -84,6 +85,137 @@ class MarchingSquare(Other):
     return img
 
 
-class 2D_Raycast(Other):
+class Raycast_2D(Other):
   def __init__(self):
-    pass
+    super(Raycast_2D,self).__init__()
+    self.ops = OpenSimplex()
+    self.xoff = 0
+    self.yoff = 10
+
+    self.boundaries = self.generate_boundaries()
+    self.particle = Particle(int(WIDTH/2),int(HEIGHT/2))
+    self.initialise_image()
+
+  def generate_boundaries(self,nb_bound = 6):
+    boundaries = self.generate_borders()
+    boundaries.extend(self.generate_bounds(nb_bound))
+    return boundaries
+
+  def generate_borders(self):
+    top = Boundary((0,0),(WIDTH,0))
+    right = Boundary((WIDTH,0),(WIDTH,HEIGHT))
+    bot = Boundary((0,HEIGHT),(WIDTH,HEIGHT))
+    left = Boundary((0,0),(0,HEIGHT))
+    return [top,right,bot,left]
+
+  def generate_bounds(self,nb):
+    boundaries = []
+    for _ in range(nb):
+      boundaries.append( Boundary( ( randint(0,WIDTH), randint(0,HEIGHT) ), ( randint(0,WIDTH), randint(0,HEIGHT) ) ) )
+    return boundaries
+
+  def initialise_image(self):
+    self.image = full((HEIGHT,WIDTH),50,dtype=uint8)
+    for boundary in self.boundaries:
+      self.image = boundary.draw(self.image)
+
+  def draw(self):
+    self.image = self.particle.draw(self.image,self.boundaries)
+
+  def update(self):
+    self.initialise_image()
+    noise_X = self.ops.noise2d(self.xoff,self.xoff)
+    noise_X = self.rescale(noise_X,-1,1,0,1) * WIDTH
+    noise_Y = self.ops.noise2d(self.yoff,self.yoff)
+    noise_Y = self.rescale(noise_Y,-1,1,0,1) * HEIGHT
+    self.particle.update(int(noise_X),int(noise_Y))
+
+    self.draw()
+
+    self.xoff += .01
+    self.yoff += .01
+
+    return cvtColor(self.image,COLOR_GRAY2BGR)
+
+
+class Boundary:
+  def __init__(self,a,b):
+    self.a = a
+    self.b = b
+
+  def draw(self,img):
+    line(img,self.a,self.b,0,3)
+    return img
+
+class Particle:
+  def __init__(self,x,y,nb_rays=360):
+    self.x = x
+    self.y = y
+    self.rays = self.build_rays(nb_rays)
+
+  def update(self,x,y):
+    self.x = x
+    self.y = y
+
+  def build_rays(self,nb_rays):
+    deg_per_rays = int(360/nb_rays)
+    rays = [Ray(self,radians(i)) for i in range(0,360,deg_per_rays)]
+    return rays
+
+  def dist(self,p2):
+    return sqrt( (p2[0]-self.x)**2 + (p2[1] - self.y)**2 )
+
+  def draw(self,img,boundaries):
+    for ray in self.rays:
+      min_d = sys.maxsize
+      min_pt = None
+      for bound in boundaries:
+        pt = ray.cast(bound)
+        if pt is not None:
+          d = self.dist(pt)
+          if d < min_d:
+            min_d = d
+            min_pt = pt
+
+      
+      if min_pt is not None:
+        img = ray.draw(img,min_pt)
+    circle(img,(self.x,self.y),5,255,-1)
+    return img
+
+
+class Ray:
+  def __init__(self,parent,angle):
+    self.parent = parent
+    self.direction = self.dir_from_angle(angle)
+
+  def dir_from_angle(self,angle):
+    return (cos(angle),sin(angle))
+
+  def cast(self,bound):
+    x1 = bound.a[0]
+    y1 = bound.a[1]
+    x2 = bound.b[0]
+    y2 = bound.b[1]
+    x3 = self.parent.x
+    y3 = self.parent.y
+    x4 = x3 + self.direction[0]
+    y4 = y3 + self.direction[1]
+
+    denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+    if denominator == 0:
+      return None
+
+    t = ( (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4) ) / denominator
+    u = -( (x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3) ) / denominator
+    if t >= 0 and t <= 1 and u >= 0:
+      x = x1 + t * (x2 - x1)
+      y = y1 + t * (y2 - y1)
+      return (int(x),int(y))
+    else:
+      return None
+
+  def draw(self,img,pt):
+    line(img,(self.parent.x,self.parent.y),pt,200,1)
+    return img
+

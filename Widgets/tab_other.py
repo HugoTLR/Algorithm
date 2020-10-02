@@ -48,11 +48,11 @@ class Tab_Other(QWidget):
       #Draw
       self.update_visual()
 
+      time.sleep(0.01) # Avoid crashing if too few points
       #Update
       end = time.time()
 
       self.lbl_fps.setText(f"Average FPS : {1/(end-start):.5f}")
-      time.sleep(0.01) # Avoid crashing if too few points
     sys.exit()
 
 
@@ -61,8 +61,8 @@ class Tab_Other(QWidget):
 
     if item == "MarchingSquare":
         self.other = MarchingSquare()
-
-    # self.other = MarchingSquare()
+    elif item == "Raycast_2D":
+      self.other = Raycast_2D()
     self.stop_event = threading.Event()
     self.c_thread = threading.Thread(target=self.anim_listener,args=(self.stop_event,))
     self.c_thread.start()
