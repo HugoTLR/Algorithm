@@ -1,16 +1,21 @@
-Simple QT5 App to visualize several works:
+Simple QT5 App to visualize several algorithms:
 
--Sorting algorithm
+-Sorting algorithms
 ![Example](./Images/example_sort.png)
 
--Pathfinding algorithm
+-Pathfinding algorithms
 ![Example](./Images/example_pathfinder.png)
 
 -Quadratic algorithm
 ![Example](./Images/example_quadratic.gif)
 
 -Eca
-![Example](./Images/Wolfram_ECA_Rules/rule_030.png)
+![Example](./Images/eca-30.gif)
 
+-Raycasting
+![Example](./Images/2d_raycasting.gif)
+
+-Marching Square
+![Example](./Images/marching_square.gif)
 
 
