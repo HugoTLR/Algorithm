@@ -3,6 +3,7 @@
 from copy import deepcopy as dc
 import math
 #Local
+
 class Sorter:
   def __init__(self):
     pass
@@ -19,6 +20,15 @@ class Sorter:
     l[j] = x
     return l
 
+  def initialize(self,data):
+    self.data_size = len(data)
+    self.steps = [dc(data)]
+    self.steps_status = [ [0]*self.data_size ]
+
+  def finalise(self, data):
+    self.steps.append(dc(data))
+    self.steps_status.append([1] * self.data_size)
+
   def build_status(self):
     raise NotImplementedError("Must override build_status")
   def sort(self):
@@ -31,9 +41,9 @@ class Insertion(Sorter):
   def __str__(self):
     return super().__str__()
 
-  def build_status(self,i,l):
+  def build_status(self,i):
     ll = []
-    for j in range(l):
+    for j in range(self.data_size):
       if j <= i :
         ll.append(1)
       elif j > i + 1:
@@ -42,27 +52,21 @@ class Insertion(Sorter):
         ll.append(2)
     return ll
 
-  def sort(self,l):
-    self.steps = [dc(l),dc(l)]
-    self.steps_status = [self.build_status(-1,len(l)),self.build_status(0,len(l))]
+  def sort(self,data):
+    self.initialize(data)
+    i = 0
+    while i < self.data_size:
+      x, j = data[i], i - 1
 
-    i,len_l = 1,len(l)
-    while i < len_l:
-
-      x, j = l[i], i-1
-      while j >= 0 and l[j] > x:
-        l[j+1] = l[j]
+      while j >= 0 and data[j] > x:
+        data[j + 1] = data[j]
         j -= 1
-      l[j+1]= x
-      self.steps_status.append(self.build_status(i,len_l))
-      self.steps.append(dc(l))
+      data[j + 1] = x
+
+      self.steps_status.append(self.build_status(i))
+      self.steps.append(dc(data))
+
       i += 1
-
-    # self.final_step = self.steps[-1]
-    # self.steps = self.steps[:-1]
-    # self.final_status = self.steps_status[-1]
-    # self.steps_status = self.steps_status[:-1]
-
 
 class Selection(Sorter):
   def __init__(self):
@@ -70,40 +74,32 @@ class Selection(Sorter):
   def __str__(self):
     return super().__str__()
 
-  def build_status(self,i,jmin,l):
+  def build_status(self,i,jmin):
     ll = []
-    for j in range(l):
-      if j == jmin:
+    for j in range(self.data_size):
+      if j == i:
         ll.append(2)
+      elif j == jmin:
+        ll.append(3)
+      elif j < i:
+        ll.append(1)
       else:
-        if j <= i :
-          ll.append(1)
-        else:
-          ll.append(0)
+        ll.append(0)
     return ll
 
-  def sort(self,l):
-    self.init_step = dc(l)
-    self.init_status = self.build_status(0,0,len(l))
-    self.steps = []
-    self.steps_status = []
-    len_l = len(l)
-    for i in range(len_l-1):
+  def sort(self,data):
+    self.initialize(data)
+    for i in range(self.data_size):
       jmin = i
-      for j in range(i+1,len_l,1):
-        if (l[j] < l[jmin]):
+      for j in range(i + 1, self.data_size, 1):
+        if (data[j] < data[jmin]):
           jmin = j
-
-      status = self.build_status(i,jmin,len_l)
-      self.steps_status.append(status)
-      self.steps_status[-1][i] = 2
-      self.steps.append(dc(l))
+      self.steps_status.append(self.build_status(i, jmin))
+      self.steps.append(dc(data))
       if jmin != i:
-        l = self.swap(l,i,jmin)
+        data = self.swap(data, i, jmin)
 
-    self.final_step = dc(l)
-    self.final_status = [1 for _ in range(len_l)]
-
+    self.finalise(data)
 
 class Quicksort(Sorter):
   def __init__(self):
@@ -111,55 +107,51 @@ class Quicksort(Sorter):
   def __str__(self):
     super().__str__()
 
-  def build_status(self,l,i,lo=-1,hi=-1):
+  def build_status(self,i,low=-1,hi=-1):
     ll = []
-    m = min(i,lo,hi)
-    for j in range(l):
+    for j in range(self.data_size):
       if j == i:
         ll.append(2)
-      elif j == lo or j == hi:
+      elif j == low:
+        ll.append(4)
+      elif j == hi:
         ll.append(3)
-      elif j < m:
+      elif j < low:
         ll.append(1)
       else:
         ll.append(0)
     return ll
 
   def sort(self,data):
-    lo = 0
-    hi = len(data) -1
-    len_d = len(data)
-    self.init_step = dc(data)
-    self.init_status = self.build_status(len_d,hi)
-    self.steps = []
-    self.steps_status =[]
-    self.run_sort(data,lo,hi)
+    self.initialize(data)
+    low = 0
+    hi = self.data_size - 1 
 
-    self.final_step = dc(data)
-    self.final_status = self.build_status(len_d,hi+1,len_d,len_d)
+    self.run_sort(data,low,hi)
+
+    self.finalise(data)
    
 
-  def partition(self,data,lo,hi):
+  def partition(self,data,low,hi):
     pivot = data[hi]
-    i = lo
-
-
-    for j in range(lo,hi,1):
+    i = low
+    for j in range(low,hi,1):
       if data[j] < pivot:
-        self.swap(data,i,j)
+        data = self.swap(data,i,j)
         i += 1
-    self.swap(data,i,hi)
+        self.steps.append(dc(data))
+        self.steps_status.append(self.build_status(i,low,hi))
+    data = self.swap(data,i,hi)
+
     return i
 
   #Bcs of recursivity we need to initialize init step outside the function
-  def run_sort(self,data,lo,hi):
-     if lo < hi:
-      p = self.partition(data,lo,hi)
-      self.steps.append(dc(data))
-      self.steps_status.append(self.build_status(len(data),p,lo,hi))
-      
-      self.run_sort(data,lo,p-1)
+  def run_sort(self,data,low,hi):
+    if low < hi:
+      p = self.partition(data,low,hi)
+      self.run_sort(data,low,p-1)
       self.run_sort(data,p+1,hi)
+
 
 
 class Bubblesort(Sorter):
@@ -168,9 +160,9 @@ class Bubblesort(Sorter):
   def __str__(self):
     super().__str__()
 
-  def build_status(self,l,i=-1,ii=-1,n=-1):
+  def build_status(self,i=-1,ii=-1,n=-1):
     ll = []
-    for j in range(l):
+    for j in range(self.data_size):
       if j == i or j == ii:
         ll.append(2)
       elif n != -1 and j >= n:
@@ -180,28 +172,22 @@ class Bubblesort(Sorter):
     return ll
 
   def sort(self,data):
-    len_d = len(data)
-
-    self.init_step = dc(data)
-    self.init_status = self.build_status(len_d)
-    self.steps = []
-    self.steps_status =[]
+    self.initialize(data)
 
     swapped = True
-    n = len_d
+    n = self.data_size
     while swapped:
       swapped = False
-      for i in range(1,len_d,1):
+      for i in range(1,self.data_size,1):
         self.steps.append(dc(data))
-        self.steps_status.append(self.build_status(len_d,i-1,i,n))
+        self.steps_status.append(self.build_status(i-1,i,n))
 
         if data[i-1] > data[i]:
-          self.swap(data,i-1,i)
+          data = self.swap(data,i-1,i)
           swapped = True
       n -= 1
 
-    self.final_step = dc(data)
-    self.final_status = self.build_status(len_d,len_d,len_d,-2)
+    self.finalise(data)
 
 class Bubblesort_Optimized(Sorter):
   def __init__(self):
@@ -209,9 +195,9 @@ class Bubblesort_Optimized(Sorter):
   def __str__(self):
     super().__str__()
 
-  def build_status(self,l,i=-1,ii=-1,n=-1):
+  def build_status(self,i=-1,ii=-1,n=-1):
     ll = []
-    for j in range(l):
+    for j in range(self.data_size):
       if j == i or j == ii:
         ll.append(2)
       elif n != -1 and j >= n:
@@ -221,28 +207,21 @@ class Bubblesort_Optimized(Sorter):
     return ll
 
   def sort(self,data):
-    len_d = len(data)
+    self.initialize(data)
 
-    self.init_step = dc(data)
-    self.init_status = self.build_status(len_d)
-    self.steps = []
-    self.steps_status =[]
-
-    n = len_d
+    n = self.data_size
     swapped = True
     while swapped:
       swapped = False
       for i in range(1,n,1):
         self.steps.append(dc(data))
-        self.steps_status.append(self.build_status(len_d,i-1,i,n))
-
+        self.steps_status.append(self.build_status(i-1,i,n))
         if data[i-1] > data[i]:
-          self.swap(data,i-1,i)
+          data = self.swap(data,i-1,i)
           swapped = True
       n -= 1
 
-    self.final_step = dc(data)
-    self.final_status = self.build_status(len_d,len_d,len_d,-2)
+    self.finalise(data)
 
 class Bubblesort_Optimized_2(Sorter):
   def __init__(self):
@@ -250,9 +229,9 @@ class Bubblesort_Optimized_2(Sorter):
   def __str__(self):
     return super().__str__()
 
-  def build_status(self,l,i=-1,ii=-1,n=-1):
+  def build_status(self,i=-1,ii=-1,n=-1):
     ll = []
-    for j in range(l):
+    for j in range(self.data_size):
       if j == i or j == ii:
         ll.append(2)
       elif n != -1 and j >= n:
@@ -262,24 +241,22 @@ class Bubblesort_Optimized_2(Sorter):
     return ll
 
   def sort(self,data):
+    self.initialize(data)
     len_d = len(data)
-    self.init_step = dc(data)
-    self.init_status = self.build_status(len_d)
-    self.steps = []
-    self.steps_status =[]
 
-    n = len_d
-    while n >= 1:
+
+    n = self.data_size
+    while n > 1:
       new_n = 0
       for i in range(1,n,1):
         self.steps.append(dc(data))
-        self.steps_status.append(self.build_status(len_d,i-1,i,n))
+        self.steps_status.append(self.build_status(i-1,i,n))
         if data[i-1] > data[i]:
-          self.swap(data,i-1,i)
+          data = self.swap(data,i-1,i)
           new_n = i
       n = new_n
-    self.final_step = dc(data)
-    self.final_status = self.build_status(len_d,len_d,len_d,-2)
+
+    self.finalise(data)
 
 class Combsort(Sorter):
   def __init__(self):
@@ -288,48 +265,44 @@ class Combsort(Sorter):
     return super().__str_()
 
 
-  def build_status(self,l,i,gapi):
+  def build_status(self,gap,i,gapi):
     ll = []
-    for j in range(l):
-      if j == i:
+    for j in range(self.data_size):
+      if j > i and j < gapi:
         ll.append(2)
       elif j == gapi:
         ll.append(3)
-      elif j < i:
-        ll.append(1)
+      elif j == i:
+        ll.append(4)
+      # elif j < i:
+      #   ll.append(1)
       else:
         ll.append(0)
     return ll
   def sort(self,data):
-    len_d = len(data)
+    self.initialize(data)
 
-    self.init_step = dc(data)
-    self.init_status = self.build_status(len_d,-1,-1)
-    self.steps = []
-    self.steps_status =[]
-
-    gap = len_d
+    gap = self.data_size
     shrink = 1.3 #Constant factor
     is_sorted = False
 
     while not is_sorted:
+
       gap = math.floor(gap/shrink)
       if gap <= 1:
         gap = 1
         is_sorted = True
-
       i = 0
-      while i + gap < len_d:
+      while i + gap < self.data_size:
         self.steps.append(dc(data))
-        self.steps_status.append(self.build_status(len_d,i,i+gap))
+        self.steps_status.append(self.build_status(gap,i,i+gap))
         if data[i] > data[i+gap]:
-          self.swap(data,i,i+gap)
+          data = self.swap(data,i,i+gap)
           is_sorted = False
         i += 1
 
+    self.finalise(data)
 
-    self.final_step = dc(data)
-    self.final_status = self.build_status(len_d,len_d,-1)
 
 
 class Gnomesort(Sorter):
@@ -338,9 +311,9 @@ class Gnomesort(Sorter):
   def __str__(self):
     return super().__str__()
 
-  def build_status(self,l,i):
+  def build_status(self,i):
     ll = []
-    for j in range(l):
+    for j in range(self.data_size):
       if j == i:
         ll.append(2)
       elif j < i:
@@ -349,23 +322,19 @@ class Gnomesort(Sorter):
         ll.append(0)
     return ll
   def sort(self,data):
+    self.initialize(data)
     pos = 0
-    len_d = len(data)
 
-    self.init_step = dc(data)
-    self.init_status = self.build_status(len_d,-1)
-    self.steps = []
-    self.steps_status =[]
-
-    while pos < len_d:
+    while pos < self.data_size:
       self.steps.append(dc(data))
-      self.steps_status.append(self.build_status(len_d,pos))
-      if pos == 0 or data[pos] >= data[pos-1]:
+      self.steps_status.append(self.build_status(pos))
+      if pos == 0:
+        pos += 1
+      if data[pos] >= data[pos-1]:
         pos += 1
       else:
-        self.swap(data,pos,pos-1)
+        data = self.swap(data,pos,pos-1)
         pos -= 1
 
 
-    self.final_step = dc(data)
-    self.final_status = self.build_status(len_d,len_d)
+    self.finalise(data)
