@@ -10,7 +10,7 @@ Simple QT5 App to visualize several algorithms:
 ![Example](./Images/example_quadratic.gif)
 
 -Eca
-![Example](./Images/eca-30.gif)
+![Example](./Images/eca_30.gif)
 
 -Raycasting
 ![Example](./Images/2d_raycasting.gif)

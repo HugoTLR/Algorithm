@@ -56,7 +56,8 @@ class Tab_Sorter(Tab):
         self.object = Gnomesort()
 
       self.object.sort(dc(data))
-      self.total_steps = len(self.object.steps)-1
+
+      self.total_steps = len(self.object.steps) - 1
       self.sld_steps.setMaximum(self.total_steps)
 
       self.current_step = 0
