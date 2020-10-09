@@ -31,8 +31,8 @@ class Range:
   
 class Pt(Range):
   def __init__(self,cx,cy,radius):
-    self.cx = cx
-    self.cy = cy
+    super(Pt, self).__init__(cx,cy)
+
     self.radius = radius #Just for collision test for performance
     self.depth = None
     self.highlited = False
@@ -58,7 +58,7 @@ class Pt(Range):
     return f"({self.cx},{self.cy})"
 class Quad(Range):
   def __init__(self,cx,cy,w,h):
-    Range.__init__(self,cx,cy)
+    super(Quad, self).__init__(cx,cy)
     self.w = w
     self.h = h
 
