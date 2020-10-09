@@ -1,5 +1,7 @@
 import unittest
 
+from random import choice
+
 from Classes import sorter
 
 class TestSorter(unittest.TestCase):
@@ -17,12 +19,14 @@ class TestSorter(unittest.TestCase):
     self.data_size = len(self.data)
 
   def test_swap(self):
-    i, j = 1, 8
+    i = choice([v for v in range(self.data_size)])
+    j = choice([v for v in range(self.data_size) if v != i])
     self.assertTrue(self.data_size > 0)
-    self.assertTrue( (i >= 0 and i < self.data_size) )
-    self.assertTrue( (j >= 0 and j < self.data_size and j != i ))
+    self.assertTrue(i >= 0 and i < self.data_size )
+    self.assertTrue(j >= 0 and j < self.data_size )
+    self.assertTrue(j != i)
     result = sorter.Sorter().swap(self.data,i,j)
-    self.assertEqual(result, [0,1,8,6,3,5,4,2,9,7] )
+    self.assertEqual(result, sorter.Sorter().swap(self.data,i,j) )
 
 class TestInsertion(TestSorter):
   def setUp(self):

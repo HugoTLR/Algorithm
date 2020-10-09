@@ -55,7 +55,7 @@ class Pt(Range):
     self.highlited = False #Reset the collision boolean
 
   def __str__(self):
-    return f"({self.cx},{self.cy})"
+    return f"({self.cx=},{self.cy=},{self.radius=})"
 class Quad(Range):
   def __init__(self,cx,cy,w,h):
     super(Quad, self).__init__(cx,cy)
@@ -63,7 +63,7 @@ class Quad(Range):
     self.h = h
 
   def __str__(self):
-    return f"{(self.cx,self.cy,self.w,self.h)}"
+    return f"({self.cx=},{self.cy=},{self.w=},{self.h=})"
   def contains(self,p):
     return (p.cx >= self.cx-Range.HALF(self.w) and p.cx < self.cx + Range.HALF(self.w)) and \
         (p.cy >= self.cy-Range.HALF(self.h) and p.cy < self.cy + Range.HALF(self.h))
