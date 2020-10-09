@@ -153,7 +153,7 @@ class Quicksort(Sorter):
 
   #Bcs of recursivity we need to initialize init step outside the function
   def run_sort(self,data,lo,hi):
-     if lo < hi:
+    if lo < hi:
       p = self.partition(data,lo,hi)
       self.steps.append(dc(data))
       self.steps_status.append(self.build_status(len(data),p,lo,hi))
