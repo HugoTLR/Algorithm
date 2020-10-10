@@ -99,7 +99,7 @@ class TestQuadTree(unittest.TestCase):
     self.cx, self.cy = randint(0,self.w), randint(0,self.h)
     self.pt_limit = randint(1,50)
     self.qtree = quad.QuadTree((self.cx,self.cy,self.w,self.h),self.pt_limit)
-    self.pt = pt = quad.Pt(randint(self.cx-quad.Range.HALF(self.w),self.cx+quad.Range.HALF(self.w)),\
+    self.pt =  quad.Pt(randint(self.cx-quad.Range.HALF(self.w),self.cx+quad.Range.HALF(self.w)),\
             randint(self.cy-quad.Range.HALF(self.h),self.cy+quad.Range.HALF(self.h)),\
             randint(1,10))
   def test_divide(self):
@@ -134,6 +134,38 @@ class TestQuadTree(unittest.TestCase):
     result = self.qtree.query(self.pt)
     self.assertIn(self.pt, result)
 
+
+class TestQuadratic(unittest.TestCase):
+  def setUp(self):
+    self.quadratic = quad.Quadratic(randint(1,500),randint(1,20))
+
+  def test_update_points(self):
+    pts = [quad.Pt(randint(0,100),randint(0,100),randint(0,10)) for _ in range(self.quadratic.nb_points)]
+    self.quadratic.update_points(pts)
+    self.assertEqual(pts,self.quadratic.points)
+
+  def test_create_qtree(self):
+    self.test_update_points()
+    self.quadratic.create_qtree()
+    self.assertIsInstance(self.quadratic.qtree, quad.QuadTree)
+
+  def test_update_qtree(self):
+    """
+    Should be an integration test ?
+    """
+    pass
+
+  def test_check_collision(self):
+    """
+    Should be an integration test ?
+    """
+    pass
+
+  def test_normal_collision_check(self):
+    """
+    Should be an integration test ?
+    """
+    pass
 
 if __name__ == "__main__":
   unittest.main()
