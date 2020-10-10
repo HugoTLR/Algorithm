@@ -14,7 +14,6 @@ class TestRange(unittest.TestCase):
       cls.setUp = setUpOverride
 
   def setUp(self):
-
     self.h = randint(0,800)
     self.w = randint(0,1000)
     self.cx, self.cy = randint(0,self.w), randint(0,self.h)
@@ -40,8 +39,8 @@ class TestPt(TestRange):
     self.assertTrue(ret)
 
   def test_contains(self):
-    pt = quad.Pt(randint(self.cx-self.radius,self.cx+self.radius),\
-                  randint(self.cy-self.radius,self.cy+self.radius),\
+    pt = quad.Pt(randint(self.cx-self.radius,self.cx+self.radius-1),\
+                  randint(self.cy-self.radius,self.cy+self.radius-1),\
                   randint(1,10))
 
     ret = self.pt.contains(pt)
@@ -62,26 +61,79 @@ class TestQuad(TestRange):
     self.assertTrue(self.h > 0)
 
   def test_contains(self):
-    pt = quad.Pt(randint(self.cx-quad.Range.HALF(self.w),self.cx+quad.Range.HALF(self.w)),\
-                randint(self.cy-quad.Range.HALF(self.h),self.cy+quad.Range.HALF(self.h)),randint(1,10))
+    """
+    Test that quad contain point
+    """
+    pt = quad.Pt(randint(self.cx-quad.Range.HALF(self.w),self.cx-1+quad.Range.HALF(self.w)),\
+                randint(self.cy-quad.Range.HALF(self.h),self.cy-1+quad.Range.HALF(self.h)),\
+                randint(1,10))
     
     ret = self.quad.contains(pt)
     self.assertTrue(ret)
 
   def test_intersects(self):
+    """
+    Test that quad intersects with point
+    """
     pt = quad.Pt(randint(self.cx-quad.Range.HALF(self.w),self.cx+quad.Range.HALF(self.w)),\
                 randint(self.cy-quad.Range.HALF(self.h),self.cy+quad.Range.HALF(self.h)),\
                 randint(1,10))
-    # print(str(self.quad),str(pt))
     ret = self.quad.intersects(pt)
     self.assertTrue(ret)
+    """
 
+    Test that quad intersects with quad
+
+    """
     qd = quad.Quad(randint(self.cx - quad.Range.HALF(self.w), self.cx + quad.Range.HALF(self.w) ),\
                     randint(self.cy - quad.Range.HALF(self.h), self.cy + quad.Range.HALF(self.h) ),\
                     self.w,\
                     self.h)
     ret = self.quad.intersects(qd)
     self.assertTrue(ret)
+
+class TestQuadTree(unittest.TestCase):
+  def setUp(self):
+    self.h = randint(0,800)
+    self.w = randint(0,1000)
+    self.cx, self.cy = randint(0,self.w), randint(0,self.h)
+    self.pt_limit = randint(1,50)
+    self.qtree = quad.QuadTree((self.cx,self.cy,self.w,self.h),self.pt_limit)
+    self.pt = pt = quad.Pt(randint(self.cx-quad.Range.HALF(self.w),self.cx+quad.Range.HALF(self.w)),\
+            randint(self.cy-quad.Range.HALF(self.h),self.cy+quad.Range.HALF(self.h)),\
+            randint(1,10))
+  def test_divide(self):
+    self.qtree.divide()
+    self.assertTrue(self.qtree.divided)
+    self.assertIsInstance(self.qtree.child['NE'], quad.QuadTree)
+    self.assertIsInstance(self.qtree.child['NW'], quad.QuadTree)
+    self.assertIsInstance(self.qtree.child['SE'], quad.QuadTree)
+    self.assertIsInstance(self.qtree.child['SW'], quad.QuadTree)
+
+  def test_push_to_child(self):
+    self.test_divide()
+
+    n_pts_ne = len(self.qtree.child['NE'].points)
+    n_pts_nw = len(self.qtree.child['NW'].points)
+    n_pts_se = len(self.qtree.child['SE'].points)
+    n_pts_sw = len(self.qtree.child['SW'].points)
+    self.qtree.push_to_child(self.pt)
+    self.assertTrue(len(self.qtree.child['NE'].points) in [n_pts_ne,n_pts_ne+1])
+    self.assertTrue(len(self.qtree.child['NW'].points) in [n_pts_nw,n_pts_nw+1])
+    self.assertTrue(len(self.qtree.child['SE'].points) in [n_pts_se,n_pts_se+1])
+    self.assertTrue(len(self.qtree.child['SW'].points) in [n_pts_sw,n_pts_sw+1])
+
+
+  def test_insert(self):
+    n_pts = len(self.qtree.points)
+    self.qtree.insert(self.pt)
+    self.assertEqual(len(self.qtree.points), n_pts + 1)
+
+  def test_query(self):
+    self.test_insert()
+    result = self.qtree.query(self.pt)
+    self.assertIn(self.pt, result)
+
 
 if __name__ == "__main__":
   unittest.main()
